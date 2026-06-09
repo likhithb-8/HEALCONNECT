@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo, useRef } from "react";
 import { getDoc, onSnapshot, doc } from "firebase/firestore";
 import { db } from "@lib/firebase";
 import dynamic from "next/dynamic";
@@ -6,9 +6,12 @@ import Image from "next/image";
 const ApexCharts = dynamic(() => import("react-apexcharts"), { ssr: false });
 
 export default function ECGMonitor() {
-  const [data, setData] = useState([]);
+  const [data, setData] = useState({});
   const [deviceStatus, setDeviceStatus] = useState(false);
   const [ecgData, setECGData] = useState([{ x: Date.now(), y: 0 }]);
+
+  // Use a ref to track pulse data to stabilize the real-time interval
+  const pulseRef = useRef(0);
 
   useEffect(() => {
     const docRef = doc(db, "devices", "0001");
@@ -17,7 +20,9 @@ export default function ECGMonitor() {
     getDoc(docRef)
       .then((doc) => {
         if (doc.exists()) {
-          setData({ ...doc.data() });
+          const docData = doc.data();
+          setData(docData);
+          pulseRef.current = docData.pulse;
         } else {
           console.log("No such document!");
         }
@@ -29,8 +34,10 @@ export default function ECGMonitor() {
     // Get real-time updates
     const unsubscribe = onSnapshot(docRef, (doc) => {
       if (doc.exists()) {
-        setData({ ...doc.data() });
-        setDeviceStatus(doc.data().status);
+        const docData = doc.data();
+        setData(docData);
+        setDeviceStatus(docData.status);
+        pulseRef.current = docData.pulse;
       } else {
         console.log("No such document!");
       }
@@ -38,7 +45,8 @@ export default function ECGMonitor() {
     return () => unsubscribe();
   }, []);
 
-  const [options, setOptions] = useState({
+  // Memoize chart options to prevent unnecessary re-renders of ApexCharts
+  const options = useMemo(() => ({
     chart: {
       id: "realtime",
       height: 450,
@@ -68,35 +76,37 @@ export default function ECGMonitor() {
     legend: { show: false },
     stroke: { curve: "smooth" },
     markers: { size: 0 },
-  });
+  }), []);
 
+  // Use a stable interval for real-time updates
   useEffect(() => {
     const interval = setInterval(() => {
-      const newECGData = ecgData ? [...ecgData] : [];
-      const pulse = data.pulse;
+      const pulse = pulseRef.current;
 
-      if (pulse >= -300 && pulse <= 300) {
-        newECGData.push({ x: Date.now(), y: 0 });
-      } else if (pulse > 600) {
-        const pulseArray = [
-          { x: Date.now(), y: 64 },
-          { x: Date.now() + 5, y: 168 },
-          // ... rest of your pulseArray ...
-          { x: Date.now() + 165, y: -40 },
-        ];
-        newECGData.push(...pulseArray);
-      } else {
-        return;
-      }
+      setECGData(prevData => {
+        const newECGData = [...prevData];
 
-      if (newECGData.length > 1000) {
-        newECGData.shift();
-      }
-      setECGData(newECGData);
+        if (pulse >= -300 && pulse <= 300) {
+          newECGData.push({ x: Date.now(), y: 0 });
+        } else if (pulse > 600) {
+          const pulseArray = [
+            { x: Date.now(), y: 64 },
+            { x: Date.now() + 5, y: 168 },
+            // ... rest of your pulseArray ...
+            { x: Date.now() + 165, y: -40 },
+          ];
+          newECGData.push(...pulseArray);
+        }
+
+        if (newECGData.length > 1000) {
+          return newECGData.slice(-1000);
+        }
+        return newECGData;
+      });
     }, 100);
 
     return () => clearInterval(interval);
-  }, [ecgData, data.pulse]);
+  }, []); // Stable interval
 
   return (
     <>
@@ -137,7 +147,7 @@ export default function ECGMonitor() {
             </div>
             <div className="basis-11/12">
               {!deviceStatus ? (
-                <div className="h-400"></div>
+                <div className="h-[450px]"></div>
               ) : (
                 <ApexCharts
                   options={options}

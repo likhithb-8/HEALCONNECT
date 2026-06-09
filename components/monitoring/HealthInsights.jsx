@@ -2,11 +2,12 @@ import { motion } from 'framer-motion';
 import { FaBrain, FaRegLightbulb, FaExclamationTriangle, FaCheckCircle, FaChartLine } from 'react-icons/fa';
 import Link from 'next/link';
 import { isVitalNormal, DEFAULT_THRESHOLDS } from '../../lib/thresholdDefaults';
+import React, { useMemo } from 'react';
 
-export default function HealthInsights({ currentVitals, history }) {
-  // AI analysis logic using standardized thresholds
-  const analyzeHealth = () => {
-    const insights = [];
+function HealthInsights({ currentVitals, history }) {
+  // AI analysis logic using standardized thresholds - Memoized for performance
+  const insights = useMemo(() => {
+    const results = [];
     const { heartRate, oxygen } = currentVitals;
 
     // Heart Rate Analysis using centralized thresholds
@@ -14,7 +15,7 @@ export default function HealthInsights({ currentVitals, history }) {
       const hrStatus = isVitalNormal('heartRate', heartRate);
       if (hrStatus.status === 'critical' || hrStatus.status === 'warning') {
         const isHigh = heartRate > DEFAULT_THRESHOLDS.heartRate.maxValue;
-        insights.push({
+        results.push({
           id: 'hr-alert',
           type: hrStatus.status,
           title: `${isHigh ? 'Elevated' : 'Low'} Heart Rate Detected`,
@@ -33,7 +34,7 @@ export default function HealthInsights({ currentVitals, history }) {
     if (oxygen > 0) {
       const oxStatus = isVitalNormal('oxygen', oxygen);
       if (oxStatus.status === 'critical' || oxStatus.status === 'warning') {
-        insights.push({
+        results.push({
           id: 'spo2-low',
           type: oxStatus.status,
           title: 'Oxygen Saturation Alert',
@@ -48,7 +49,7 @@ export default function HealthInsights({ currentVitals, history }) {
     if (history && history.length > 2) {
         const hrTrend = history[0].heartRate > history[1].heartRate && history[1].heartRate > history[2].heartRate;
         if (hrTrend) {
-            insights.push({
+            results.push({
                 id: 'trend-hr-up',
                 type: 'info',
                 title: 'Rising Heart Rate Trend',
@@ -60,8 +61,8 @@ export default function HealthInsights({ currentVitals, history }) {
     }
 
     // Positive Insights
-    if (insights.length === 0 && heartRate > 0) {
-      insights.push({
+    if (results.length === 0 && heartRate > 0) {
+      results.push({
         id: 'all-good',
         type: 'success',
         title: 'Vitals are Stable',
@@ -71,13 +72,11 @@ export default function HealthInsights({ currentVitals, history }) {
       });
     }
 
-    return insights;
-  };
+    return results;
+  }, [currentVitals.heartRate, currentVitals.oxygen, history]); // eslint-disable-line react-hooks/exhaustive-deps
 
-  const insights = analyzeHealth();
-
-  // Generate a daily summary message based on data
-  const generateSummary = () => {
+  // Generate a daily summary message based on data - Memoized for performance
+  const summary = useMemo(() => {
     if (!history || history.length === 0) return "Start monitoring to generate your daily health summary.";
     
     const normalCount = history.filter(h => {
@@ -89,9 +88,9 @@ export default function HealthInsights({ currentVitals, history }) {
     const percentage = Math.round((normalCount / history.length) * 100);
     
     if (percentage === 100) return "Your health parameters have been exceptionally stable today. All recorded vitals are within optimal ranges.";
-    if (percentage > 80) return "You've had a mostly healthy day. A few minor fluctuations were detected, but overall your vitals are stable.";
-    return "We've noticed several fluctuations in your health data today. It might be a good idea to rest and monitor closely.";
-  };
+    if (percentage > 80) return "You&apos;ve had a mostly healthy day. A few minor fluctuations were detected, but overall your vitals are stable.";
+    return "We&apos;ve noticed several fluctuations in your health data today. It might be a good idea to rest and monitor closely.";
+  }, [history]);
 
   return (
     <div className="mt-12">
@@ -108,7 +107,7 @@ export default function HealthInsights({ currentVitals, history }) {
             <div>
                 <h3 className="text-sm font-bold text-blue-600 dark:text-blue-400 uppercase tracking-widest mb-1">Daily Health Summary</h3>
                 <p className="text-lg font-medium text-gray-800 dark:text-gray-200 leading-relaxed">
-                    "{generateSummary()}"
+                    &ldquo;{summary}&rdquo;
                 </p>
             </div>
         </div>
@@ -148,7 +147,7 @@ export default function HealthInsights({ currentVitals, history }) {
                 <div className="bg-gray-50 dark:bg-gray-900/50 p-4 rounded-xl border border-gray-100 dark:border-gray-800">
                   <p className="text-xs font-bold text-gray-400 uppercase tracking-widest mb-1">Recommendation</p>
                   <p className="text-sm text-gray-700 dark:text-gray-300 italic font-medium">
-                    "{insight.recommendation}"
+                    &ldquo;{insight.recommendation}&rdquo;
                   </p>
                 </div>
                 {insight.type === 'critical' && (
@@ -167,3 +166,5 @@ export default function HealthInsights({ currentVitals, history }) {
     </div>
   );
 }
+
+export default React.memo(HealthInsights);
