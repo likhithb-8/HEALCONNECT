@@ -299,6 +299,7 @@ export default function LoginPage() {
                 <button
                   type="button"
                   onClick={() => setShowPassword(!showPassword)}
+                  aria-label={showPassword ? "Hide password" : "Show password"}
                   style={{
                     position: "absolute",
                     right: "10px",
@@ -456,6 +457,7 @@ export default function LoginPage() {
                   setForgotEmail("");
                   setForgotMessage("");
                 }}
+                aria-label="Close"
                 style={{
                   background: "none",
                   border: "none",
