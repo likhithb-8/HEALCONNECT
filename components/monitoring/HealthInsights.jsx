@@ -108,7 +108,7 @@ export default function HealthInsights({ currentVitals, history }) {
             <div>
                 <h3 className="text-sm font-bold text-blue-600 dark:text-blue-400 uppercase tracking-widest mb-1">Daily Health Summary</h3>
                 <p className="text-lg font-medium text-gray-800 dark:text-gray-200 leading-relaxed">
-                    "{generateSummary()}"
+                    &quot;{generateSummary()}&quot;
                 </p>
             </div>
         </div>
@@ -148,7 +148,7 @@ export default function HealthInsights({ currentVitals, history }) {
                 <div className="bg-gray-50 dark:bg-gray-900/50 p-4 rounded-xl border border-gray-100 dark:border-gray-800">
                   <p className="text-xs font-bold text-gray-400 uppercase tracking-widest mb-1">Recommendation</p>
                   <p className="text-sm text-gray-700 dark:text-gray-300 italic font-medium">
-                    "{insight.recommendation}"
+                    &quot;{insight.recommendation}&quot;
                   </p>
                 </div>
                 {insight.type === 'critical' && (
