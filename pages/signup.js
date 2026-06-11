@@ -325,6 +325,7 @@ export default function SignupPage() {
       {/* Dark Mode Toggle */}
       <button
         onClick={toggleDarkMode}
+        aria-label={darkMode ? "Switch to light mode" : "Switch to dark mode"}
         style={{
           position: "fixed",
           top: "15px",
@@ -386,16 +387,19 @@ export default function SignupPage() {
           <form onSubmit={handleSignup}>
             {/* Full Name */}
             <div style={{ marginBottom: "16px" }}>
-              <label style={{
-                display: "block",
-                marginBottom: "6px",
-                color: darkMode ? "#e2e8f0" : "#4a5568",
-                fontSize: "13px",
-                fontWeight: "600",
-              }}>
+              <label
+                htmlFor="fullName"
+                style={{
+                  display: "block",
+                  marginBottom: "6px",
+                  color: darkMode ? "#e2e8f0" : "#4a5568",
+                  fontSize: "13px",
+                  fontWeight: "600",
+                }}>
                 FULL NAME
               </label>
               <input
+                id="fullName"
                 type="text"
                 name="fullName"
                 placeholder="Enter your full name"
@@ -422,16 +426,19 @@ export default function SignupPage() {
 
             {/* Username */}
             <div style={{ marginBottom: "16px" }}>
-              <label style={{
-                display: "block",
-                marginBottom: "6px",
-                color: darkMode ? "#e2e8f0" : "#4a5568",
-                fontSize: "13px",
-                fontWeight: "600",
-              }}>
+              <label
+                htmlFor="username"
+                style={{
+                  display: "block",
+                  marginBottom: "6px",
+                  color: darkMode ? "#e2e8f0" : "#4a5568",
+                  fontSize: "13px",
+                  fontWeight: "600",
+                }}>
                 USERNAME
               </label>
               <input
+                id="username"
                 type="text"
                 name="username"
                 placeholder="Choose a username"
@@ -458,16 +465,19 @@ export default function SignupPage() {
 
             {/* Email */}
             <div style={{ marginBottom: "16px" }}>
-              <label style={{
-                display: "block",
-                marginBottom: "6px",
-                color: darkMode ? "#e2e8f0" : "#4a5568",
-                fontSize: "13px",
-                fontWeight: "600",
-              }}>
+              <label
+                htmlFor="email"
+                style={{
+                  display: "block",
+                  marginBottom: "6px",
+                  color: darkMode ? "#e2e8f0" : "#4a5568",
+                  fontSize: "13px",
+                  fontWeight: "600",
+                }}>
                 EMAIL
               </label>
               <input
+                id="email"
                 type="email"
                 name="email"
                 placeholder="Enter your email"
@@ -494,16 +504,19 @@ export default function SignupPage() {
 
             {/* Phone */}
             <div style={{ marginBottom: "16px" }}>
-              <label style={{
-                display: "block",
-                marginBottom: "6px",
-                color: darkMode ? "#e2e8f0" : "#4a5568",
-                fontSize: "13px",
-                fontWeight: "600",
-              }}>
+              <label
+                htmlFor="phone"
+                style={{
+                  display: "block",
+                  marginBottom: "6px",
+                  color: darkMode ? "#e2e8f0" : "#4a5568",
+                  fontSize: "13px",
+                  fontWeight: "600",
+                }}>
                 PHONE NUMBER
               </label>
               <input
+                id="phone"
                 type="tel"
                 name="phone"
                 placeholder="Enter 10-digit phone number"
@@ -531,16 +544,19 @@ export default function SignupPage() {
             {/* Age and Gender */}
             <div style={{ display: "flex", gap: "12px", marginBottom: "16px" }}>
               <div style={{ flex: 1 }}>
-                <label style={{
-                  display: "block",
-                  marginBottom: "6px",
-                  color: darkMode ? "#e2e8f0" : "#4a5568",
-                  fontSize: "13px",
-                  fontWeight: "600",
-                }}>
+                <label
+                  htmlFor="age"
+                  style={{
+                    display: "block",
+                    marginBottom: "6px",
+                    color: darkMode ? "#e2e8f0" : "#4a5568",
+                    fontSize: "13px",
+                    fontWeight: "600",
+                  }}>
                   AGE
                 </label>
                 <input
+                  id="age"
                   type="number"
                   name="age"
                   placeholder="Age"
@@ -568,16 +584,19 @@ export default function SignupPage() {
               </div>
 
               <div style={{ flex: 1 }}>
-                <label style={{
-                  display: "block",
-                  marginBottom: "6px",
-                  color: darkMode ? "#e2e8f0" : "#4a5568",
-                  fontSize: "13px",
-                  fontWeight: "600",
-                }}>
+                <label
+                  htmlFor="gender"
+                  style={{
+                    display: "block",
+                    marginBottom: "6px",
+                    color: darkMode ? "#e2e8f0" : "#4a5568",
+                    fontSize: "13px",
+                    fontWeight: "600",
+                  }}>
                   GENDER
                 </label>
                 <select
+                  id="gender"
                   name="gender"
                   value={formData.gender}
                   onChange={handleChange}
@@ -601,17 +620,20 @@ export default function SignupPage() {
 
             {/* Password */}
             <div style={{ marginBottom: "16px" }}>
-              <label style={{
-                display: "block",
-                marginBottom: "6px",
-                color: darkMode ? "#e2e8f0" : "#4a5568",
-                fontSize: "13px",
-                fontWeight: "600",
-              }}>
+              <label
+                htmlFor="password"
+                style={{
+                  display: "block",
+                  marginBottom: "6px",
+                  color: darkMode ? "#e2e8f0" : "#4a5568",
+                  fontSize: "13px",
+                  fontWeight: "600",
+                }}>
                 PASSWORD
               </label>
               <div style={{ position: "relative" }}>
                 <input
+                  id="password"
                   type={showPassword ? "text" : "password"}
                   name="password"
                   placeholder="Create a password"
@@ -632,6 +654,7 @@ export default function SignupPage() {
                 <button
                   type="button"
                   onClick={() => setShowPassword(!showPassword)}
+                  aria-label={showPassword ? "Hide password" : "Show password"}
                   style={{
                     position: "absolute",
                     right: "10px",
@@ -728,17 +751,20 @@ export default function SignupPage() {
 
             {/* Confirm Password */}
             <div style={{ marginBottom: "16px" }}>
-              <label style={{
-                display: "block",
-                marginBottom: "6px",
-                color: darkMode ? "#e2e8f0" : "#4a5568",
-                fontSize: "13px",
-                fontWeight: "600",
-              }}>
+              <label
+                htmlFor="confirmPassword"
+                style={{
+                  display: "block",
+                  marginBottom: "6px",
+                  color: darkMode ? "#e2e8f0" : "#4a5568",
+                  fontSize: "13px",
+                  fontWeight: "600",
+                }}>
                 CONFIRM PASSWORD
               </label>
               <div style={{ position: "relative" }}>
                 <input
+                  id="confirmPassword"
                   type={showConfirmPassword ? "text" : "password"}
                   name="confirmPassword"
                   placeholder="Confirm your password"
@@ -759,6 +785,7 @@ export default function SignupPage() {
                 <button
                   type="button"
                   onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                  aria-label={showConfirmPassword ? "Hide password" : "Show password"}
                   style={{
                     position: "absolute",
                     right: "10px",
@@ -949,16 +976,19 @@ export default function SignupPage() {
               {/* Admin Code Field - Only shown for admin role */}
               {formData.role === "admin" && (
                 <div style={{ marginBottom: "16px" }}>
-                  <label style={{
-                    display: "block",
-                    marginBottom: "6px",
-                    color: darkMode ? "#e2e8f0" : "#4a5568",
-                    fontSize: "13px",
-                    fontWeight: "600",
-                  }}>
+                  <label
+                    htmlFor="adminCode"
+                    style={{
+                      display: "block",
+                      marginBottom: "6px",
+                      color: darkMode ? "#e2e8f0" : "#4a5568",
+                      fontSize: "13px",
+                      fontWeight: "600",
+                    }}>
                     ADMIN CODE
                   </label>
                   <input
+                    id="adminCode"
                     type="password"
                     name="adminCode"
                     placeholder="Enter admin authorization code"
