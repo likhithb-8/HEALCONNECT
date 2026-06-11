@@ -1,0 +1,16 @@
+
+> healconnect@0.1.0 dev /app
+> next dev
+
+   ▲ Next.js 15.5.19
+   - Local:        http://localhost:3000
+   - Network:      http://192.168.0.2:3000
+
+ ✓ Starting...
+> [PWA] PWA support is disabled
+> [PWA] PWA support is disabled
+ ✓ Ready in 2.5s
+ ○ Compiling / ...
+ ✓ Compiled / in 12.4s (881 modules)
+⚠️ Firebase config missing. Using demo config. Please set up your .env.local file with proper Firebase credentials.
+ GET / 200 in 13874ms
