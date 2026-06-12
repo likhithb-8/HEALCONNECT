@@ -172,6 +172,7 @@ export default function LoginPage() {
       {/* Dark Mode Toggle */}
       <button
         onClick={toggleDarkMode}
+        aria-label={darkMode ? "Switch to light mode" : "Switch to dark mode"}
         style={{
           position: "fixed",
           top: "15px",
@@ -233,16 +234,19 @@ export default function LoginPage() {
           <form onSubmit={handleLogin}>
             {/* Username */}
             <div style={{ marginBottom: "16px" }}>
-              <label style={{
-                display: "block",
-                marginBottom: "6px",
-                color: darkMode ? "#e2e8f0" : "#4a5568",
-                fontSize: "13px",
-                fontWeight: "600",
-              }}>
+              <label
+                htmlFor="username"
+                style={{
+                  display: "block",
+                  marginBottom: "6px",
+                  color: darkMode ? "#e2e8f0" : "#4a5568",
+                  fontSize: "13px",
+                  fontWeight: "600",
+                }}>
                 USERNAME
               </label>
               <input
+                id="username"
                 type="text"
                 placeholder="Username"
                 value={username}
@@ -266,17 +270,20 @@ export default function LoginPage() {
 
             {/* Password */}
             <div style={{ marginBottom: "16px" }}>
-              <label style={{
-                display: "block",
-                marginBottom: "6px",
-                color: darkMode ? "#e2e8f0" : "#4a5568",
-                fontSize: "13px",
-                fontWeight: "600",
-              }}>
+              <label
+                htmlFor="password"
+                style={{
+                  display: "block",
+                  marginBottom: "6px",
+                  color: darkMode ? "#e2e8f0" : "#4a5568",
+                  fontSize: "13px",
+                  fontWeight: "600",
+                }}>
                 PASSWORD
               </label>
               <div style={{ position: "relative" }}>
                 <input
+                  id="password"
                   type={showPassword ? "text" : "password"}
                   placeholder="Password"
                   value={password}
@@ -299,6 +306,7 @@ export default function LoginPage() {
                 <button
                   type="button"
                   onClick={() => setShowPassword(!showPassword)}
+                  aria-label={showPassword ? "Hide password" : "Show password"}
                   style={{
                     position: "absolute",
                     right: "10px",
@@ -486,16 +494,19 @@ export default function LoginPage() {
 
             {/* Email Input */}
             <div style={{ marginBottom: "16px" }}>
-              <label style={{
-                display: "block",
-                marginBottom: "6px",
-                color: darkMode ? "#e2e8f0" : "#4a5568",
-                fontSize: "13px",
-                fontWeight: "600",
-              }}>
+              <label
+                htmlFor="forgot-email"
+                style={{
+                  display: "block",
+                  marginBottom: "6px",
+                  color: darkMode ? "#e2e8f0" : "#4a5568",
+                  fontSize: "13px",
+                  fontWeight: "600",
+                }}>
                 EMAIL ADDRESS
               </label>
               <input
+                id="forgot-email"
                 type="email"
                 placeholder="Enter your email"
                 value={forgotEmail}
