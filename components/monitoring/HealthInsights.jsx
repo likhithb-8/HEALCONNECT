@@ -1,3 +1,4 @@
+import { useMemo } from 'react';
 import { motion } from 'framer-motion';
 import { FaBrain, FaRegLightbulb, FaExclamationTriangle, FaCheckCircle, FaChartLine } from 'react-icons/fa';
 import Link from 'next/link';
@@ -5,8 +6,9 @@ import { isVitalNormal, DEFAULT_THRESHOLDS } from '../../lib/thresholdDefaults';
 
 export default function HealthInsights({ currentVitals, history }) {
   // AI analysis logic using standardized thresholds
-  const analyzeHealth = () => {
-    const insights = [];
+  // Memoized to prevent expensive trend analysis on every live tick
+  const insights = useMemo(() => {
+    const insightsList = [];
     const { heartRate, oxygen } = currentVitals;
 
     // Heart Rate Analysis using centralized thresholds
@@ -14,7 +16,7 @@ export default function HealthInsights({ currentVitals, history }) {
       const hrStatus = isVitalNormal('heartRate', heartRate);
       if (hrStatus.status === 'critical' || hrStatus.status === 'warning') {
         const isHigh = heartRate > DEFAULT_THRESHOLDS.heartRate.maxValue;
-        insights.push({
+        insightsList.push({
           id: 'hr-alert',
           type: hrStatus.status,
           title: `${isHigh ? 'Elevated' : 'Low'} Heart Rate Detected`,
@@ -33,7 +35,7 @@ export default function HealthInsights({ currentVitals, history }) {
     if (oxygen > 0) {
       const oxStatus = isVitalNormal('oxygen', oxygen);
       if (oxStatus.status === 'critical' || oxStatus.status === 'warning') {
-        insights.push({
+        insightsList.push({
           id: 'spo2-low',
           type: oxStatus.status,
           title: 'Oxygen Saturation Alert',
@@ -48,7 +50,7 @@ export default function HealthInsights({ currentVitals, history }) {
     if (history && history.length > 2) {
         const hrTrend = history[0].heartRate > history[1].heartRate && history[1].heartRate > history[2].heartRate;
         if (hrTrend) {
-            insights.push({
+            insightsList.push({
                 id: 'trend-hr-up',
                 type: 'info',
                 title: 'Rising Heart Rate Trend',
@@ -60,8 +62,8 @@ export default function HealthInsights({ currentVitals, history }) {
     }
 
     // Positive Insights
-    if (insights.length === 0 && heartRate > 0) {
-      insights.push({
+    if (insightsList.length === 0 && heartRate > 0) {
+      insightsList.push({
         id: 'all-good',
         type: 'success',
         title: 'Vitals are Stable',
@@ -71,13 +73,12 @@ export default function HealthInsights({ currentVitals, history }) {
       });
     }
 
-    return insights;
-  };
-
-  const insights = analyzeHealth();
+    return insightsList;
+  }, [currentVitals, history]);
 
   // Generate a daily summary message based on data
-  const generateSummary = () => {
+  // Memoized to prevent O(n) filtering on every render
+  const summary = useMemo(() => {
     if (!history || history.length === 0) return "Start monitoring to generate your daily health summary.";
     
     const normalCount = history.filter(h => {
@@ -91,7 +92,7 @@ export default function HealthInsights({ currentVitals, history }) {
     if (percentage === 100) return "Your health parameters have been exceptionally stable today. All recorded vitals are within optimal ranges.";
     if (percentage > 80) return "You've had a mostly healthy day. A few minor fluctuations were detected, but overall your vitals are stable.";
     return "We've noticed several fluctuations in your health data today. It might be a good idea to rest and monitor closely.";
-  };
+  }, [history]);
 
   return (
     <div className="mt-12">
@@ -108,7 +109,7 @@ export default function HealthInsights({ currentVitals, history }) {
             <div>
                 <h3 className="text-sm font-bold text-blue-600 dark:text-blue-400 uppercase tracking-widest mb-1">Daily Health Summary</h3>
                 <p className="text-lg font-medium text-gray-800 dark:text-gray-200 leading-relaxed">
-                    &quot;{generateSummary()}&quot;
+                    &quot;{summary}&quot;
                 </p>
             </div>
         </div>
