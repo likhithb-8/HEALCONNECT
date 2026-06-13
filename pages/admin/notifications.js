@@ -3,7 +3,7 @@ import AuthCheck from "@components/Auth/AuthCheck";
 
 export default function Notifications() {
   return (
-    <AuthCheck>
+    <AuthCheck requiredRole="admin">
     <AdminSidebar>
     <div className='flex h-full flex-col justify-center items-center'>
       <h1 className='text-5xl text-center prose dark:prose-invert mb-5 font-bold'>Notifications</h1>
