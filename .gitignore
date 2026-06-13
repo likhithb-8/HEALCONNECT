@@ -43,3 +43,8 @@ firebase-debug.log
 
 # Firebase service account key (if any)
 serviceAccountKey.json
+
+# PWA artifacts
+public/sw.js
+public/workbox-*.js
+public/worker-*.js
