@@ -5,3 +5,7 @@
 ## 2025-05-15 - Memoizing Real-time Analysis Components
 **Learning:** Components that perform O(n) array operations (like filtering history) or multiple status checks on every render can significantly impact performance when embedded in live monitoring views that "tick" every 2-3 seconds.
 **Action:** Use `useMemo` to wrap expensive analysis logic in real-time dashboards, ensuring they only re-compute when the underlying data (current vitals or history) actually changes.
+
+## 2026-06-13 - Memoizing Real-time Monitoring Dashboards
+**Learning:** In dashboards with high-frequency "ticks" (every 2-3 seconds), using `useEffect` + `useState` for derived UI states (like alerts) causes an unnecessary extra render cycle. Passing inline objects to child components also breaks `React.memo` optimizations.
+**Action:** Use `useMemo` to derive state-dependent UI data directly and to stabilize object references passed to memoized children. Extract static helper functions outside the component body.
