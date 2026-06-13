@@ -23,7 +23,7 @@ export default function AlertsPage() {
     }, [router]);
 
     return (
-        <AuthCheck>
+        <AuthCheck requiredRole="doctor">
             <DoctorSidebar>
                 <div className="p-4">
                     {doctorId && <AlertHistory doctorId={doctorId} />}

@@ -198,7 +198,7 @@ export default function ThresholdsPage() {
     );
 
     return (
-        <AuthCheck>
+        <AuthCheck requiredRole="admin">
             <AdminSidebar>
                 <div className="p-6">
                     {/* Header */}

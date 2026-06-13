@@ -6,7 +6,7 @@ const DoctorSidebar = dynamic(() => import("@components/Sidebar/DoctorSidebar"),
 
 export default function Reports(Component , pageProps) {
   return (
-    <AuthCheck>
+    <AuthCheck requiredRole="doctor">
     <DoctorSidebar>
       <div className='flex h-full flex-col justify-center items-center'>
       <h1 className='text-5xl text-center prose dark:prose-invert mb-5 font-bold'>Reports</h1>
