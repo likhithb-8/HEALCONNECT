@@ -3,7 +3,7 @@ import PatientSidebar from "@components/Sidebar/PatientSidebar";
 
 export default function Reports(params) {
     return (
-        <AuthCheck>
+        <AuthCheck requiredRole="patient">
             <PatientSidebar>
                 <h1>All Reports</h1>
             </PatientSidebar>

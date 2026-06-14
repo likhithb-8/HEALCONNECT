@@ -11,7 +11,7 @@ export default function Admin(props) {
   return (
     <>
     { !isUserLoading ? (
-    <AuthCheck>
+    <AuthCheck requiredRole="admin">
       { userRole === 'admin' ? <Dashboard /> : <IndexAuthCheck/>}
     </AuthCheck>
     )

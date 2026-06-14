@@ -10,7 +10,7 @@ import { FaSpinner, FaAngleRight } from 'react-icons/fa';
 
 export default function DoctorEdit(props) {
   return (
-    <AuthCheck>
+    <AuthCheck requiredRole="admin">
         <AdminSidebar>
         <EditDoctor />
         </AdminSidebar>

@@ -89,7 +89,7 @@ export default function EditProfile() {
     };
 
     return (
-        <AuthCheck>
+        <AuthCheck requiredRole="patient">
             <PatientSidebar>
                 <div className="p-2 w-full h-full flex flex-col">
                     <div className="h-20"></div>

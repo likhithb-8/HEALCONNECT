@@ -3,7 +3,7 @@ import PatientSidebar from "@components/Sidebar/PatientSidebar";
 
 export default function Notifications(params) {
     return (
-        <AuthCheck>
+        <AuthCheck requiredRole="patient">
             <PatientSidebar>
                 <h1>Notifications</h1>
             </PatientSidebar>
