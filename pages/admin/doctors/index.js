@@ -11,7 +11,7 @@ export default function Doctors(props) {
   const router = useRouter();
 
   return (
-    <AuthCheck>
+    <AuthCheck requiredRole="admin">
       <AdminSidebar>
         <div className=" flex flex-row justify-start items-center dark:text-gray3">
           <p>Doctors</p>

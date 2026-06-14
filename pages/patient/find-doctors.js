@@ -7,7 +7,7 @@ const DoctorFinder = dynamic(() => import("@components/DoctorComponents/DoctorFi
 
 export default function FindDoctors() {
   return (
-    <AuthCheck>
+    <AuthCheck requiredRole="patient">
       <Head>
         <title>Find Doctors - HealConnect</title>
         <meta name="description" content="Find doctors in your area with HealConnect" />

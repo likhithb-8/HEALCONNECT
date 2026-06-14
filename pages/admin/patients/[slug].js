@@ -22,7 +22,7 @@ export default function Patient(props) {
 
   return (
     <main>
-      <AuthCheck>
+      <AuthCheck requiredRole="admin">
         <>
           {/* Patients Route */}
           <Link href={"/admin/patients"}>

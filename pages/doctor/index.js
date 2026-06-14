@@ -14,7 +14,7 @@ export default function Doctor() {
   return (
     <>
     { !isUserLoading ? (
-    <AuthCheck>
+    <AuthCheck requiredRole="doctor">
       { userRole === 'doctor' ? <Dashboard /> : <IndexAuthCheck/>}
     </AuthCheck>
     )

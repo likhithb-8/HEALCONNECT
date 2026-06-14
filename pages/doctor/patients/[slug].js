@@ -21,7 +21,7 @@ export default function Patient(props) {
 
   return (
     <main>
-    <AuthCheck>
+    <AuthCheck requiredRole="doctor">
       <>
         {/* Patients Route */}
         <Link href={"/doctor/patients"}>

@@ -12,7 +12,7 @@ export default function Patients(prose) {
   const { patients, loading } = FetchPatients();
 
   return (
-    <AuthCheck>
+    <AuthCheck requiredRole="doctor">
     <DoctorSidebar>
         {/* Patients Route */}
         <div className=" flex flex-row justify-start items-center dark:text-gray3">

@@ -52,7 +52,7 @@ export default function Add(props) {
   }
 
   return (
-    <AuthCheck>
+    <AuthCheck requiredRole="doctor">
       <DoctorSidebar>
         <div>
           <h1 className="prose lg:prose-xl font-bold md:ml-4 py-2 dark:text-gray1">

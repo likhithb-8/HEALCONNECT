@@ -10,7 +10,7 @@ import { FaEdit, FaSpinner, FaUserMd, FaSearch } from "react-icons/fa";
 export default function Dashboard(params) {
     const { currentUser } = useContext(UserContext);
     return (
-        <AuthCheck>
+        <AuthCheck requiredRole="patient">
             <PatientSidebar>
                 <div className="p-2 w-full h-full flex flex-col">
                 <div className="h-20"></div>
