@@ -81,11 +81,11 @@ export default function Add(props) {
               <Divider />
               <div className="flex flex-wrap -mx-3">
                     <div className="w-full md:w-5/12 px-3 mb-6 md:mb-0">
-                    <FormInput  className="input-field" label="Aadhar ID" id="grid-first-name" type="number" placeholder="0123 4567 8999" pattern="^[2-9]{1}[0-9]{3}\\s[0-9]{4}\\s[0-9]{4}$" required={true} onChange={(e) => setAadhar(e.target.value)}/>
+                    <FormInput  className="input-field" label="Aadhar ID" id="aadhar-id" type="number" placeholder="0123 4567 8999" pattern="^[2-9]{1}[0-9]{3}\\s[0-9]{4}\\s[0-9]{4}$" required={true} onChange={(e) => setAadhar(e.target.value)}/>
                     </div>
                     <div className=" text-center md:pt-8 w-full md:w-2/12 px-3 mb-6 md:mb-0 text-gray6 dark:text-gray1"><h2>OR</h2></div>
                     <div className="w-full md:w-5/12 px-3">
-                    <FormInput  className="input-field" label="PAN ID" id="grid-last-name" type="number" placeholder="ABC000826D" pattern="[A-Z]{5}[0-9]{4}[A-Z]{1}" required={false} onChange={(e) => setPan(e.target.value)}/>
+                    <FormInput  className="input-field" label="PAN ID" id="pan-id" type="number" placeholder="ABC000826D" pattern="[A-Z]{5}[0-9]{4}[A-Z]{1}" required={false} onChange={(e) => setPan(e.target.value)}/>
                     </div>
                   </div>
                   <p className={`text-red-500 text-xs italic ${aadhar.length != 12 ? "block" : "hidden"}`}>Aadhar number should be 12 digits long!</p>
@@ -93,70 +93,70 @@ export default function Add(props) {
                   <Divider />
                   <div className="flex flex-wrap -mx-3 mb-6">
                     <div className=" w-full md:w-1/3 px-3 mb-6 md:mb-0">
-                      <FormInput label="First Name" required={true} pattern="[A-Za-z ]{1,32}" onChange={(e) => setFirst(e.target.value)} className=" input-field" id="grid-first-name" type="text" placeholder="Kumar"/>
+                      <FormInput label="First Name" required={true} pattern="[A-Za-z ]{1,32}" onChange={(e) => setFirst(e.target.value)} className=" input-field" id="first-name" type="text" placeholder="Kumar"/>
                     </div>
                     <div className=" w-full md:w-1/3 px-3">
-                      <FormInput label="Middle Name" required={true} pattern="[A-Za-z ]{1,32}" onChange={(e) => setMiddle(e.target.value)} className=" input-field" id="grid-middle-name" type="text" placeholder="Raosaheb"/>
+                      <FormInput label="Middle Name" required={true} pattern="[A-Za-z ]{1,32}" onChange={(e) => setMiddle(e.target.value)} className=" input-field" id="middle-name" type="text" placeholder="Raosaheb"/>
                     </div>
                     <div className=" w-full md:w-1/3 px-3">
-                      <FormInput label="Last Name" required={true} pattern="[A-Za-z ]{1,32}" onChange={(e) => setLast(e.target.value)} className=" input-field" id="grid-last-name" type="text" placeholder="Pandule"/>
+                      <FormInput label="Last Name" required={true} pattern="[A-Za-z ]{1,32}" onChange={(e) => setLast(e.target.value)} className=" input-field" id="last-name" type="text" placeholder="Pandule"/>
                     </div>
                   </div>
                   <div className="flex flex-wrap -mx-3 mb-6">
                     <div className=" w-full md:w-1/3 px-3 mb-6 md:mb-0">
-                      <FormInput label="Age" required={true} onChange={(e) => setAge(e.target.value)} className=" input-field" id="grid-first-name" type="text" placeholder="22"/>
+                      <FormInput label="Age" required={true} onChange={(e) => setAge(e.target.value)} className=" input-field" id="age" type="text" placeholder="22"/>
                     </div>
                     <div className="w-full md:w-1/3 px-3 mb-6 md:mb-0">
-                      <FormDropdown label="Gender" options={[{value: 'Select'}, {value: 'Male'}, {value: 'Female'}]} onSelect={(e) => setGender(e.target.value)} />
+                      <FormDropdown label="Gender" id="gender" options={[{value: 'Select'}, {value: 'Male'}, {value: 'Female'}]} onSelect={(e) => setGender(e.target.value)} />
                     </div>
                     <div className="w-full md:w-1/3 px-3 mb-6 md:mb-0">
-                      <FormDropdown label="Marital Status" options={[{value: 'Select'}, {value: 'Single'}, {value: 'Married'}]} onSelect={(e) => setMarital(e.target.value)}/>
+                      <FormDropdown label="Marital Status" id="marital-status" options={[{value: 'Select'}, {value: 'Single'}, {value: 'Married'}]} onSelect={(e) => setMarital(e.target.value)}/>
                     </div>
                     </div>
                   <h1 className=" text-blue-400">Patient{"'"}s Address:</h1>
                   <Divider />
                   <div className="flex flex-wrap -mx-3 mb-6">
                     <div className="w-full px-3">
-                      <label className="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2">
+                      <label htmlFor="address" className="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2">
                         Address
                       </label>
-                      <input className="input-field" id="grid-password" type="text" pattern="[A-Za-z0-9'\.\-\s\,]" placeholder="Address" onChange={(e) => setAddress(e.target.value)}/>
+                      <input className="input-field" id="address" type="text" pattern="[A-Za-z0-9'\.\-\s\,]" placeholder="Address" onChange={(e) => setAddress(e.target.value)}/>
                       <p className="text-gray-600 text-xs italic">Make it as long and as crazy as you{"'"}d like</p>
                     </div>
                   </div>
                   <div className="flex flex-wrap -mx-3 mb-6">
                   <div className="w-full md:w-1/3 px-3 mb-6 md:mb-0">
-                    <FormDropdown label="State" value="Maharashtra" options={[{value: 'Select'},{value: 'Maharashtra'}]} onSelect={(e) => setState(e.target.value)}/>
+                    <FormDropdown label="State" id="state" value="Maharashtra" options={[{value: 'Select'},{value: 'Maharashtra'}]} onSelect={(e) => setState(e.target.value)}/>
                     </div>
                     <div className="w-full md:w-1/3 px-3 mb-6 md:mb-0">
-                      <FormDropdown label="City" value="Pune" options={[{value: 'Select'},{value: 'Pune'}]} onSelect={(e) => setCity(e.target.value)} />
+                      <FormDropdown label="City" id="city" value="Pune" options={[{value: 'Select'},{value: 'Pune'}]} onSelect={(e) => setCity(e.target.value)} />
                     </div>
                     <div className="w-full md:w-1/3 px-3 mb-6 md:mb-0">
-                      <FormInput label="PIN Code" required={true} pattern="[0-9]{5}" onChange={(e) => setPin(e.target.value)} className=" input-field" id="grid-first-name" type="number" placeholder="411046"/>
+                      <FormInput label="PIN Code" id="pin-code" required={true} pattern="[0-9]{5}" onChange={(e) => setPin(e.target.value)} className=" input-field" type="number" placeholder="411046"/>
                     </div>
                   </div>
                   <h1 className=" text-blue-400">Contact Details:</h1>
                   <Divider />
                   <div className="flex flex-wrap -mx-3 mb-6">
                     <div className="w-full md:w-5/12 px-3 mb-6 md:mb-0">
-                      <FormInput label="Phone No" required={true} pattern="/(7|8|9)\d{9}/" onChange={(e) => setNumber(e.target.value)} className="input-field" id="grid-first-name" type="number" placeholder="0123456789" />
+                      <FormInput label="Phone No" id="phone-no" required={true} pattern="/(7|8|9)\d{9}/" onChange={(e) => setNumber(e.target.value)} className="input-field" type="number" placeholder="0123456789" />
                     </div>
                     <div className=" text-center md:pt-8 w-full md:w-2/12 px-3 mb-6 md:mb-0 text-gray6 dark:text-gray1"><h2>OR</h2></div>
                     <div className="w-full md:w-5/12 px-3">
-                      <FormInput label="Landline No" required={false} pattern="/(7|8|9)\d{9}/" onChange={(e) => setLandline(e.target.value)} className="input-field" id="grid-first-name" type="number" placeholder="0000000"/>
+                      <FormInput label="Landline No" id="landline-no" required={false} pattern="/(7|8|9)\d{9}/" onChange={(e) => setLandline(e.target.value)} className="input-field" type="number" placeholder="0000000"/>
                     </div>
                   </div>
                   <h1 className=" text-blue-400">Body Measurements:</h1>
                   <Divider />
                   <div className="flex flex-row flex-wrap -mx-3 mb-6">
                     <div className=" w-full md:w-1/3 px-3 mb-6 md:mb-0">
-                      <FormInput label="Blood Group" required={false} pattern="(A|B|AB|O)[+-]" onChange={(e) => setBlood(e.target.value)} className="input-field" id="grid-first-name" type="text" placeholder="B+"/>
+                      <FormInput label="Blood Group" id="blood-group" required={false} pattern="(A|B|AB|O)[+-]" onChange={(e) => setBlood(e.target.value)} className="input-field" type="text" placeholder="B+"/>
                     </div>
                     <div className=" w-full md:w-1/3 px-3">
-                      <FormInput label="Height" required={false} pattern="[0-9]{3}" onChange={(e) => setHeight(e.target.value)} className="input-field" id="grid-first-name" type="number" placeholder="185"/>
+                      <FormInput label="Height" id="height" required={false} pattern="[0-9]{3}" onChange={(e) => setHeight(e.target.value)} className="input-field" type="number" placeholder="185"/>
                       </div>
                     <div className=" w-full md:w-1/3 px-3">
-                      <FormInput label="Weight" required={false} pattern="[0-9]{3}" onChange={(e) => setWeight(e.target.value)} className="input-field" id="grid-first-name" type="number" placeholder="90"/>
+                      <FormInput label="Weight" id="weight" required={false} pattern="[0-9]{3}" onChange={(e) => setWeight(e.target.value)} className="input-field" type="number" placeholder="90"/>
                     </div>
                   </div>
                   <button type="submit" className=" px-6 w-full h-10 flex justify-center text-gray1 py-2 duration-300 relative after:absolute after:top-0 after:right-full bg-green-500 after:z-10 after:w-full after:h-full overflow-hidden hover:after:translate-x-full after:duration-300 hover:text-slate-900">
@@ -183,6 +183,7 @@ export const FormInput = (props) => {
   return (
     <div>
         <label
+          htmlFor={id}
           className="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2" >{label}<span className="text-red-500">*</span>
         </label>
         <input required={required} pattern={pattern} onChange={onChange} className={className} id={id} type={type} placeholder={placeholder}/>
@@ -191,15 +192,15 @@ export const FormInput = (props) => {
 }
 
 export const FormDropdown = (props) =>{
-  const { label, options, onSelect} = props;
+  const { label, options, onSelect, id} = props;
   return (
       <div>
-      <label className="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2" >{label}<span className="text-red-500">*</span>
+      <label htmlFor={id} className="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2" >{label}<span className="text-red-500">*</span>
       </label>
       <div className="relative">
-        <select onChange={onSelect} className="block appearance-none w-full bg-gray-200 border border-gray-200 text-gray-700 py-3 px-4 pr-8 rounded leading-tight focus:outline-none focus:bg-white focus:border-gray-500" id="grid-state">
+        <select id={id} onChange={onSelect} className="block appearance-none w-full bg-gray-200 border border-gray-200 text-gray-700 py-3 px-4 pr-8 rounded leading-tight focus:outline-none focus:bg-white focus:border-gray-500">
           {options.map(opt => {
-            return (<option key={opt.value} id={opt.value} value={opt.value}>{opt.value}</option>);
+            return (<option key={opt.value} value={opt.value}>{opt.value}</option>);
           })}
         </select>
         <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
