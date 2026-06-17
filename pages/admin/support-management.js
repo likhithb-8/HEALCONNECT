@@ -4,9 +4,10 @@ import {
   FaTicketAlt, FaUsers, FaClock, FaCheckCircle, FaExclamationTriangle,
   FaFilter, FaSearch, FaDownload, FaEye, FaReply, FaArchive, FaTrash,
   FaUserPlus, FaChartLine, FaBell, FaCog, FaSignOutAlt, FaHeadset,
-  FaRobot, FaPhone, FaEnvelope, FaCalendarAlt, FaTrendingUp, FaTimes, FaPaperPlane
+  FaRobot, FaPhone, FaEnvelope, FaCalendarAlt, FaTimes, FaPaperPlane
 } from 'react-icons/fa';
 import { getSupportTickets, subscribeToTickets, getTicketStats, addTicketMessage, updateTicketStatus } from '../../lib/ticketSync';
+import AuthCheck from '@components/Auth/AuthCheck';
 import styles from './support-management.module.css';
 
 const AdminSupportManagement = () => {
@@ -487,7 +488,7 @@ const AdminSupportManagement = () => {
         <div className={styles.chartCard}>
           <h3>Ticket Volume Trend</h3>
           <div className={styles.chartPlaceholder}>
-            <FaTrendingUp className={styles.chartIcon} />
+            <FaChartLine className={styles.chartIcon} />
             <p>Interactive chart showing ticket volume over time</p>
           </div>
         </div>
@@ -583,7 +584,7 @@ const AdminSupportManagement = () => {
           <div className={styles.emptyState}>
             <FaBell className={styles.emptyIcon} />
             <h3>No notifications</h3>
-            <p>You're all caught up!</p>
+            <p>You&apos;re all caught up!</p>
           </div>
         ) : (
           notifications.map((notification) => (
@@ -707,6 +708,7 @@ const AdminSupportManagement = () => {
   );
 
   return (
+    <AuthCheck requiredRole="admin">
     <div className={styles.adminSupport}>
       {/* Sidebar */}
       <div className={styles.sidebar}>
@@ -834,6 +836,7 @@ const AdminSupportManagement = () => {
         )}
       </AnimatePresence>
     </div>
+    </AuthCheck>
   );
 };
 
