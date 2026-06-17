@@ -9,8 +9,10 @@
  ✓ Starting...
 > [PWA] PWA support is disabled
 > [PWA] PWA support is disabled
- ✓ Ready in 2.5s
- ○ Compiling / ...
- ✓ Compiled / in 12.4s (881 modules)
+ ✓ Ready in 2.2s
+ ○ Compiling /monitoring ...
+ ✓ Compiled /monitoring in 13.1s (845 modules)
 ⚠️ Firebase config missing. Using demo config. Please set up your .env.local file with proper Firebase credentials.
- GET / 200 in 13874ms
+ GET /monitoring/ 200 in 14323ms
+ ○ Compiling /login ...
+ ✓ Compiled /login in 6.3s (854 modules)
