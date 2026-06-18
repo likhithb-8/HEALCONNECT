@@ -17,12 +17,13 @@ export default function LoginPage() {
   const [showForgotPassword, setShowForgotPassword] = useState(false);
   const [forgotEmail, setForgotEmail] = useState("");
   const [forgotMessage, setForgotMessage] = useState("");
+  const [isLoggingIn, setIsLoggingIn] = useState(false);
 
   // Initialize dark mode
   useEffect(() => {
     const savedTheme = localStorage.getItem("theme");
     const systemPrefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
-    
+
     // Default to light mode unless explicitly saved as dark
     if (savedTheme === "dark") {
       setDarkMode(true);
@@ -53,9 +54,11 @@ export default function LoginPage() {
   const handleLogin = (e) => {
     e.preventDefault();
     setError(""); // Clear previous errors
+    setIsLoggingIn(true);
 
     if (!username.trim() || !password.trim()) {
       setError("Please enter both username and password");
+      setIsLoggingIn(false);
       return;
     }
 
@@ -67,12 +70,14 @@ export default function LoginPage() {
 
     if (!user) {
       setError("User not found. Please sign up first.");
+      setIsLoggingIn(false);
       return;
     }
 
     // Check password
     if (user.password !== password) {
       setError("Incorrect password. Please try again.");
+      setIsLoggingIn(false);
       return;
     }
 
@@ -143,27 +148,27 @@ export default function LoginPage() {
       {/* Animated background elements */}
       <div className={styles.backgroundElements}>
         <div className={styles.circleElement} style={{
-          background: darkMode 
+          background: darkMode
             ? "linear-gradient(135deg, rgba(37, 99, 235, 0.08) 0%, rgba(16, 185, 129, 0.08) 100%)"
             : "linear-gradient(135deg, rgba(37, 99, 235, 0.15) 0%, rgba(16, 185, 129, 0.15) 100%)"
         }}></div>
         <div className={styles.circleElement} style={{
-          background: darkMode 
+          background: darkMode
             ? "linear-gradient(135deg, rgba(37, 99, 235, 0.08) 0%, rgba(16, 185, 129, 0.08) 100%)"
             : "linear-gradient(135deg, rgba(37, 99, 235, 0.15) 0%, rgba(16, 185, 129, 0.15) 100%)"
         }}></div>
         <div className={styles.circleElement} style={{
-          background: darkMode 
+          background: darkMode
             ? "linear-gradient(135deg, rgba(37, 99, 235, 0.08) 0%, rgba(16, 185, 129, 0.08) 100%)"
             : "linear-gradient(135deg, rgba(37, 99, 235, 0.15) 0%, rgba(16, 185, 129, 0.15) 100%)"
         }}></div>
         <div className={styles.circleElement} style={{
-          background: darkMode 
+          background: darkMode
             ? "linear-gradient(135deg, rgba(37, 99, 235, 0.08) 0%, rgba(16, 185, 129, 0.08) 100%)"
             : "linear-gradient(135deg, rgba(37, 99, 235, 0.15) 0%, rgba(16, 185, 129, 0.15) 100%)"
         }}></div>
         <div className={styles.circleElement} style={{
-          background: darkMode 
+          background: darkMode
             ? "linear-gradient(135deg, rgba(37, 99, 235, 0.08) 0%, rgba(16, 185, 129, 0.08) 100%)"
             : "linear-gradient(135deg, rgba(37, 99, 235, 0.15) 0%, rgba(16, 185, 129, 0.15) 100%)"
         }}></div>
@@ -351,20 +356,22 @@ export default function LoginPage() {
             {/* Login Button */}
             <button
               type="submit"
+              disabled={isLoggingIn}
               style={{
                 width: "100%",
                 padding: "12px",
-                background: darkMode ? "#1565c0" : "#1976d2",
+                background: isLoggingIn ? "#a0aec0" : (darkMode ? "#1565c0" : "#1976d2"),
                 color: "white",
                 border: "none",
                 borderRadius: "6px",
-                cursor: "pointer",
+                cursor: isLoggingIn ? "not-allowed" : "pointer",
                 fontSize: "15px",
                 fontWeight: "600",
                 marginBottom: "12px",
+                opacity: isLoggingIn ? 0.7 : 1,
               }}
             >
-              LOGIN
+              {isLoggingIn ? "LOGGING IN..." : "LOGIN"}
             </button>
 
             {/* Forgot Password Link */}
@@ -477,6 +484,7 @@ export default function LoginPage() {
                   alignItems: "center",
                   justifyContent: "center",
                 }}
+                aria-label="Close forgot password modal"
               >
                 ×
               </button>
@@ -597,4 +605,3 @@ export default function LoginPage() {
     </div>
   );
 }
-
