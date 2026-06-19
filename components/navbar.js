@@ -77,6 +77,7 @@ export default function Navbar() {
             href="/"
             className={`${styles.navLink} ${router.pathname === '/' ? styles.active : ''}`}
             onClick={() => setIsMenuOpen(false)}
+            aria-current={router.pathname === '/' ? 'page' : undefined}
           >
             <span className={styles.linkText}>Home</span>
             <div className={styles.linkHoverEffect}></div>
@@ -85,6 +86,7 @@ export default function Navbar() {
             href="/prescriptions"
             className={`${styles.navLink} ${router.pathname === '/prescriptions' ? styles.active : ''}`}
             onClick={() => setIsMenuOpen(false)}
+            aria-current={router.pathname === '/prescriptions' ? 'page' : undefined}
           >
             <span className={styles.linkText}>Prescriptions</span>
             <div className={styles.linkHoverEffect}></div>
@@ -93,6 +95,7 @@ export default function Navbar() {
             href="/appointments"
             className={`${styles.navLink} ${router.pathname === '/appointments' ? styles.active : ''}`}
             onClick={() => setIsMenuOpen(false)}
+            aria-current={router.pathname === '/appointments' ? 'page' : undefined}
           >
             <span className={styles.linkText}>Appointments</span>
             <div className={styles.linkHoverEffect}></div>
@@ -101,6 +104,7 @@ export default function Navbar() {
             href="/monitoring"
             className={`${styles.navLink} ${router.pathname === '/monitoring' ? styles.active : ''}`}
             onClick={() => setIsMenuOpen(false)}
+            aria-current={router.pathname === '/monitoring' ? 'page' : undefined}
           >
             <span className={styles.linkText}>Monitoring</span>
             <div className={styles.linkHoverEffect}></div>
@@ -109,6 +113,7 @@ export default function Navbar() {
             href="/faq"
             className={`${styles.navLink} ${router.pathname === '/faq' ? styles.active : ''}`}
             onClick={() => setIsMenuOpen(false)}
+            aria-current={router.pathname === '/faq' ? 'page' : undefined}
           >
             <span className={styles.linkText}>FAQ</span>
             <div className={styles.linkHoverEffect}></div>
@@ -117,6 +122,7 @@ export default function Navbar() {
             href="/contact"
             className={`${styles.navLink} ${router.pathname === '/contact' ? styles.active : ''}`}
             onClick={() => setIsMenuOpen(false)}
+            aria-current={router.pathname === '/contact' ? 'page' : undefined}
           >
             <span className={styles.linkText}>Contact</span>
             <div className={styles.linkHoverEffect}></div>
@@ -125,8 +131,9 @@ export default function Navbar() {
             href="/support"
             className={`${styles.navLink} ${router.pathname === '/support' ? styles.active : ''}`}
             onClick={() => setIsMenuOpen(false)}
+            aria-current={router.pathname === '/support' ? 'page' : undefined}
           >
-            <FaHeadset className={styles.supportIcon} />
+            <FaHeadset className={styles.supportIcon} aria-hidden="true" />
             <span className={styles.linkText}>Support</span>
             <div className={styles.linkHoverEffect}></div>
           </Link>
@@ -166,6 +173,7 @@ export default function Navbar() {
             className={`${styles.menuButton} ${isMenuOpen ? styles.menuOpen : ''}`}
             onClick={() => setIsMenuOpen(!isMenuOpen)}
             aria-label="Toggle menu"
+            aria-expanded={isMenuOpen}
           >
             <span></span>
             <span></span>
