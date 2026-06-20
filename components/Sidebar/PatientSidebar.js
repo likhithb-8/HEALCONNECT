@@ -82,11 +82,14 @@ export default function PatientSidebar({ children }) {
 
           
 
-          <span onClick={SetOpen} className=' absolute text-white md:hidden px-4 py-2 bg-green-600'>
-
+          <button
+            onClick={SetOpen}
+            aria-label={isOpen ? "Close menu" : "Open menu"}
+            aria-expanded={isOpen}
+            className=' absolute text-white md:hidden px-4 py-2 bg-green-600 focus:outline-none focus:ring-2 focus:ring-green-400 focus:ring-offset-2'
+          >
             <FaList size={18}/>
-
-          </span>
+          </button>
 
 
 
@@ -96,10 +99,14 @@ export default function PatientSidebar({ children }) {
 
               {/* Static Sidebar Icons */}
 
-               <li onClick={SetOpen} className='px-2 md:hidden'>
-
-               <FaArrowLeft className='text-red-400' size={20}/>  
-
+               <li className='px-2 md:hidden'>
+                 <button
+                   onClick={SetOpen}
+                   aria-label="Close menu"
+                   className='focus:outline-none focus:ring-2 focus:ring-red-400 p-1 rounded'
+                 >
+                   <FaArrowLeft className='text-red-400' size={20}/>
+                 </button>
                </li>
 
 
