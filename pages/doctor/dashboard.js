@@ -108,7 +108,7 @@ export default function DoctorDashboard() {
   };
 
   return (
-    <AuthCheck>
+    <AuthCheck requiredRole="doctor">
       <DoctorSidebar>
         {isOffline && (
           <div style={{ background: "#ff9800", color: "white", textAlign: "center", padding: "0.5rem" }}>

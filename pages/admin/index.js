@@ -6,13 +6,13 @@ import Dashboard from "./dashboard";
 import IndexAuthCheck from "@components/Auth/IndexAuthCheck";
 
 export default function Admin(props) {
-  const {userRole, isUserLoading} = useContext(UserContext);
+  const {isUserLoading} = useContext(UserContext);
 
   return (
     <>
     { !isUserLoading ? (
-    <AuthCheck>
-      { userRole === 'admin' ? <Dashboard /> : <IndexAuthCheck/>}
+    <AuthCheck requiredRole="admin">
+      <Dashboard />
     </AuthCheck>
     )
   :(

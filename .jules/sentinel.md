@@ -12,3 +12,8 @@
 **Vulnerability:** A nested `Downloads/` directory contained a full duplicate of the project, including sensitive configuration files and potentially outdated or exposed credentials.
 **Learning:** Accidental commits of temporary or local "backup" folders (like `Downloads/`) can lead to massive data leakage and increase the project's attack surface by mirroring vulnerabilities.
 **Prevention:** Regularly audit the repository for unexpected directories and ensure `.gitignore` is comprehensive enough to catch common temporary locations. Use `git clean -fd` locally before pushing to identify untracked files.
+
+## 2025-05-16 - [Insufficient Client-Side Role Validation]
+**Vulnerability:** The `AuthCheck` component only verified if a user was authenticated, but did not enforce role-based access control, allowing any logged-in user (e.g., a patient) to access restricted dashboards (e.g., admin or doctor) by navigating directly to their URLs.
+**Learning:** Authentication is not authorization. Simply checking if a user is "logged in" is insufficient for multi-role applications. Restricted routes must explicitly verify that the active user possesses the required privileges.
+**Prevention:** Implement a unified `AuthCheck` component that supports mandatory `requiredRole` props. Use this component to wrap all protected routes, ensuring they fail securely by displaying an "Access Denied" UI or redirecting unauthorized users.
