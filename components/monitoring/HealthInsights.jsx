@@ -1,10 +1,10 @@
-import { useMemo } from 'react';
+import { useMemo, memo } from 'react';
 import { motion } from 'framer-motion';
 import { FaBrain, FaRegLightbulb, FaExclamationTriangle, FaCheckCircle, FaChartLine } from 'react-icons/fa';
 import Link from 'next/link';
 import { isVitalNormal, DEFAULT_THRESHOLDS } from '../../lib/thresholdDefaults';
 
-export default function HealthInsights({ currentVitals, history }) {
+const HealthInsights = memo(({ currentVitals, history }) => {
   // AI analysis logic using standardized thresholds
   // Memoized to prevent expensive trend analysis on every live tick
   const insights = useMemo(() => {
@@ -167,4 +167,8 @@ export default function HealthInsights({ currentVitals, history }) {
       </div>
     </div>
   );
-}
+});
+
+HealthInsights.displayName = 'HealthInsights';
+
+export default HealthInsights;
