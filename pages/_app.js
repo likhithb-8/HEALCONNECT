@@ -10,6 +10,7 @@ import { UserContext } from '@lib/context'
 import { useUserData } from '@lib/userInfo'
 import Layout from './layout'
 import SupportWidget from '@/components/Support/SupportWidget'
+import { Toaster } from 'react-hot-toast'
 
 // ✅ Single App component
 function MyApp({ Component, pageProps }) {
@@ -17,6 +18,7 @@ function MyApp({ Component, pageProps }) {
 
   return (
     <ThemeProvider>
+      <Toaster position="top-right" reverseOrder={false} />
       <UserContext.Provider value={userData}>
         <Navbar />
         <Layout>
