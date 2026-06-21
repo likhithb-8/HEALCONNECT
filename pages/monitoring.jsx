@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
+import toast from 'react-hot-toast';
 import styles from './Monitoring.module.css';
 import { isVitalNormal, getVitalStatusMessage } from '../lib/thresholdDefaults';
 import HealthInsights from '../components/monitoring/HealthInsights';
@@ -124,11 +125,7 @@ export default function Monitoring() {
       setIsSubmitting(false);
 
       // Show success notification
-      const notification = document.getElementById('success-notification');
-      notification.style.display = 'block';
-      setTimeout(() => {
-        notification.style.display = 'none';
-      }, 3000);
+      toast.success('Health data recorded successfully!');
     }, 1500);
   };
 
@@ -222,14 +219,6 @@ export default function Monitoring() {
         )}
       </AnimatePresence>
 
-      <div id="success-notification" className={styles.successNotification}>
-        <div className={styles.notificationContent}>
-          <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <path d="M9 12L11 14L15 10M21 12C21 16.9706 16.9706 21 12 21C7.02944 21 3 16.9706 3 12C3 7.02944 7.02944 3 12 3C16.9706 3 21 7.02944 21 12Z" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
-          </svg>
-          <span>Health data recorded successfully!</span>
-        </div>
-      </div>
 
       <motion.header
         className={styles.header}
@@ -356,6 +345,7 @@ export default function Monitoring() {
               <div className={styles.formGrid}>
                 <div className={styles.inputGroup}>
                   <input
+                    id="temp-input"
                     type="number"
                     name="temperature"
                     value={data.temperature}
@@ -367,12 +357,13 @@ export default function Monitoring() {
                     className={styles.formInput}
                     placeholder=" "
                   />
-                  <label className={styles.formLabel}>Temperature (°C)</label>
+                  <label htmlFor="temp-input" className={styles.formLabel}>Temperature (°C)</label>
                   <div className={styles.formUnderline}></div>
                   {data.temperature && (
                     <div
                       className={styles.valueStatus}
                       style={{ color: getStatusColor('temperature', parseFloat(data.temperature)) }}
+                      aria-live="polite"
                     >
                       {data.temperature < 36 ? 'Low' :
                         data.temperature > 37.2 ? 'Elevated' : 'Normal'}
@@ -382,6 +373,7 @@ export default function Monitoring() {
 
                 <div className={styles.inputGroup}>
                   <input
+                    id="hr-input"
                     type="number"
                     name="heartRate"
                     value={data.heartRate}
@@ -392,12 +384,13 @@ export default function Monitoring() {
                     className={styles.formInput}
                     placeholder=" "
                   />
-                  <label className={styles.formLabel}>Heart Rate (bpm)</label>
+                  <label htmlFor="hr-input" className={styles.formLabel}>Heart Rate (bpm)</label>
                   <div className={styles.formUnderline}></div>
                   {data.heartRate && (
                     <div
                       className={styles.valueStatus}
                       style={{ color: getStatusColor('heartRate', parseFloat(data.heartRate)) }}
+                      aria-live="polite"
                     >
                       {data.heartRate < 60 ? 'Low' :
                         data.heartRate > 100 ? 'High' :
@@ -408,6 +401,7 @@ export default function Monitoring() {
 
                 <div className={styles.inputGroup}>
                   <input
+                    id="bp-input"
                     type="text"
                     name="bloodPressure"
                     value={data.bloodPressure}
@@ -417,12 +411,13 @@ export default function Monitoring() {
                     className={styles.formInput}
                     placeholder=" "
                   />
-                  <label className={styles.formLabel}>Blood Pressure (mmHg)</label>
+                  <label htmlFor="bp-input" className={styles.formLabel}>Blood Pressure (mmHg)</label>
                   <div className={styles.formUnderline}></div>
                   {data.bloodPressure && (
                     <div
                       className={styles.valueStatus}
                       style={{ color: getBloodPressureStatus(data.bloodPressure).color }}
+                      aria-live="polite"
                     >
                       {getBloodPressureStatus(data.bloodPressure).status}
                     </div>
@@ -431,6 +426,7 @@ export default function Monitoring() {
 
                 <div className={styles.inputGroup}>
                   <input
+                    id="ox-input"
                     type="number"
                     name="oxygen"
                     value={data.oxygen}
@@ -441,12 +437,13 @@ export default function Monitoring() {
                     className={styles.formInput}
                     placeholder=" "
                   />
-                  <label className={styles.formLabel}>Oxygen Saturation (%)</label>
+                  <label htmlFor="ox-input" className={styles.formLabel}>Oxygen Saturation (%)</label>
                   <div className={styles.formUnderline}></div>
                   {data.oxygen && (
                     <div
                       className={styles.valueStatus}
                       style={{ color: getStatusColor('oxygen', parseFloat(data.oxygen)) }}
+                      aria-live="polite"
                     >
                       {data.oxygen < 95 ? 'Low' :
                         data.oxygen < 97 ? 'Normal' : 'Optimal'}
@@ -456,6 +453,7 @@ export default function Monitoring() {
 
                 <div className={styles.inputGroup}>
                   <input
+                    id="glucose-input"
                     type="number"
                     name="glucose"
                     value={data.glucose}
@@ -466,12 +464,13 @@ export default function Monitoring() {
                     className={styles.formInput}
                     placeholder=" "
                   />
-                  <label className={styles.formLabel}>Glucose Level (mg/dL)</label>
+                  <label htmlFor="glucose-input" className={styles.formLabel}>Glucose Level (mg/dL)</label>
                   <div className={styles.formUnderline}></div>
                   {data.glucose && (
                     <div
                       className={styles.valueStatus}
                       style={{ color: data.glucose < 70 || data.glucose > 140 ? '#ef4444' : '#10b981' }}
+                      aria-live="polite"
                     >
                       {data.glucose < 70 ? 'Low' :
                         data.glucose > 140 ? 'High' : 'Normal'}
