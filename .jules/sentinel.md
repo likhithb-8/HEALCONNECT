@@ -12,3 +12,8 @@
 **Vulnerability:** A nested `Downloads/` directory contained a full duplicate of the project, including sensitive configuration files and potentially outdated or exposed credentials.
 **Learning:** Accidental commits of temporary or local "backup" folders (like `Downloads/`) can lead to massive data leakage and increase the project's attack surface by mirroring vulnerabilities.
 **Prevention:** Regularly audit the repository for unexpected directories and ensure `.gitignore` is comprehensive enough to catch common temporary locations. Use `git clean -fd` locally before pushing to identify untracked files.
+
+## 2025-05-15 - [Unintentional Commitment of Development Artifacts]
+**Vulnerability:** Development logs (e.g., `dev_output.log`) and build artifacts (e.g., PWA service workers) can be accidentally staged and committed if not properly ignored or reviewed.
+**Learning:** Build processes in Next.js/PWA environments can generate or modify files in the `public/` directory that are not always covered by standard `.gitignore` files, and local log files used for debugging can leak environment details.
+**Prevention:** Always perform a thorough `git status` before committing and use `git restore` to discard unintentional changes to build artifacts. Ensure `.gitignore` includes local log files and PWA generated outputs.
