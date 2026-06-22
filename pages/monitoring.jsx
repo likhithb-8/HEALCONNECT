@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, useMemo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import styles from './Monitoring.module.css';
 import { isVitalNormal, getVitalStatusMessage } from '../lib/thresholdDefaults';
@@ -36,6 +36,35 @@ const pulseAnimation = {
   }
 };
 
+// Static utility functions moved outside the component to prevent re-definition on every render
+const getStatusColor = (type, value) => {
+  // Use the threshold system for accurate status colors
+  const result = isVitalNormal(type, value);
+
+  switch (result.severity) {
+    case 'critical':
+      return '#ef4444'; // Red - critical
+    case 'warning':
+      return '#f59e0b'; // Yellow/Orange - warning
+    case 'none':
+      return '#10b981'; // Green - normal
+    default:
+      return '#3b82f6'; // Blue - default
+  }
+};
+
+const getBloodPressureStatus = (bp) => {
+  if (!bp) return { color: '#3b82f6', status: 'Normal' };
+
+  const [systolic, diastolic] = bp.split('/').map(Number);
+
+  if (systolic >= 140 || diastolic >= 90) return { color: '#ef4444', status: 'High' };
+  if (systolic >= 130 || diastolic >= 85) return { color: '#f59e0b', status: 'Elevated' };
+  if (systolic <= 90 || diastolic <= 60) return { color: '#ef4444', status: 'Low' };
+
+  return { color: '#10b981', status: 'Normal' };
+};
+
 export default function Monitoring() {
   const [data, setData] = useState({
     temperature: '',
@@ -53,6 +82,14 @@ export default function Monitoring() {
   const [criticalAlert, setCriticalAlert] = useState(null);
   const heartRateInterval = useRef(null);
   const oxygenInterval = useRef(null);
+
+  // Memoize current vitals to maintain reference equality and prevent unnecessary re-renders in child components
+  const currentVitals = useMemo(() => ({
+    heartRate: data.heartRate ? parseFloat(data.heartRate) : (isMonitoring ? currentHeartRate : 0),
+    oxygen: data.oxygen ? parseFloat(data.oxygen) : (isMonitoring ? currentOxygen : 0),
+    temperature: data.temperature ? parseFloat(data.temperature) : 0,
+    bloodPressure: data.bloodPressure
+  }), [data.heartRate, data.oxygen, data.temperature, data.bloodPressure, isMonitoring, currentHeartRate, currentOxygen]);
 
   useEffect(() => {
     if (isMonitoring || data.heartRate || data.oxygen) {
@@ -155,34 +192,6 @@ export default function Monitoring() {
       if (heartRateInterval.current) clearInterval(heartRateInterval.current);
       if (oxygenInterval.current) clearInterval(oxygenInterval.current);
     }
-  };
-
-  const getStatusColor = (type, value) => {
-    // Use the threshold system for accurate status colors
-    const result = isVitalNormal(type, value);
-
-    switch (result.severity) {
-      case 'critical':
-        return '#ef4444'; // Red - critical
-      case 'warning':
-        return '#f59e0b'; // Yellow/Orange - warning
-      case 'none':
-        return '#10b981'; // Green - normal
-      default:
-        return '#3b82f6'; // Blue - default
-    }
-  };
-
-  const getBloodPressureStatus = (bp) => {
-    if (!bp) return { color: '#3b82f6', status: 'Normal' };
-
-    const [systolic, diastolic] = bp.split('/').map(Number);
-
-    if (systolic >= 140 || diastolic >= 90) return { color: '#ef4444', status: 'High' };
-    if (systolic >= 130 || diastolic >= 85) return { color: '#f59e0b', status: 'Elevated' };
-    if (systolic <= 90 || diastolic <= 60) return { color: '#ef4444', status: 'Low' };
-
-    return { color: '#10b981', status: 'Normal' };
   };
 
   return (
@@ -326,12 +335,7 @@ export default function Monitoring() {
             </div>
 
             <HealthInsights 
-              currentVitals={{
-                heartRate: data.heartRate ? parseFloat(data.heartRate) : (isMonitoring ? currentHeartRate : 0),
-                oxygen: data.oxygen ? parseFloat(data.oxygen) : (isMonitoring ? currentOxygen : 0),
-                temperature: data.temperature ? parseFloat(data.temperature) : 0,
-                bloodPressure: data.bloodPressure
-              }}
+              currentVitals={currentVitals}
               history={history}
             />
           </motion.section>
@@ -356,6 +360,7 @@ export default function Monitoring() {
               <div className={styles.formGrid}>
                 <div className={styles.inputGroup}>
                   <input
+                    id="temperature"
                     type="number"
                     name="temperature"
                     value={data.temperature}
@@ -367,7 +372,7 @@ export default function Monitoring() {
                     className={styles.formInput}
                     placeholder=" "
                   />
-                  <label className={styles.formLabel}>Temperature (°C)</label>
+                  <label htmlFor="temperature" className={styles.formLabel}>Temperature (°C)</label>
                   <div className={styles.formUnderline}></div>
                   {data.temperature && (
                     <div
@@ -382,6 +387,7 @@ export default function Monitoring() {
 
                 <div className={styles.inputGroup}>
                   <input
+                    id="heartRate"
                     type="number"
                     name="heartRate"
                     value={data.heartRate}
@@ -392,7 +398,7 @@ export default function Monitoring() {
                     className={styles.formInput}
                     placeholder=" "
                   />
-                  <label className={styles.formLabel}>Heart Rate (bpm)</label>
+                  <label htmlFor="heartRate" className={styles.formLabel}>Heart Rate (bpm)</label>
                   <div className={styles.formUnderline}></div>
                   {data.heartRate && (
                     <div
@@ -408,6 +414,7 @@ export default function Monitoring() {
 
                 <div className={styles.inputGroup}>
                   <input
+                    id="bloodPressure"
                     type="text"
                     name="bloodPressure"
                     value={data.bloodPressure}
@@ -417,7 +424,7 @@ export default function Monitoring() {
                     className={styles.formInput}
                     placeholder=" "
                   />
-                  <label className={styles.formLabel}>Blood Pressure (mmHg)</label>
+                  <label htmlFor="bloodPressure" className={styles.formLabel}>Blood Pressure (mmHg)</label>
                   <div className={styles.formUnderline}></div>
                   {data.bloodPressure && (
                     <div
@@ -431,6 +438,7 @@ export default function Monitoring() {
 
                 <div className={styles.inputGroup}>
                   <input
+                    id="oxygen"
                     type="number"
                     name="oxygen"
                     value={data.oxygen}
@@ -441,7 +449,7 @@ export default function Monitoring() {
                     className={styles.formInput}
                     placeholder=" "
                   />
-                  <label className={styles.formLabel}>Oxygen Saturation (%)</label>
+                  <label htmlFor="oxygen" className={styles.formLabel}>Oxygen Saturation (%)</label>
                   <div className={styles.formUnderline}></div>
                   {data.oxygen && (
                     <div
@@ -456,6 +464,7 @@ export default function Monitoring() {
 
                 <div className={styles.inputGroup}>
                   <input
+                    id="glucose"
                     type="number"
                     name="glucose"
                     value={data.glucose}
@@ -466,7 +475,7 @@ export default function Monitoring() {
                     className={styles.formInput}
                     placeholder=" "
                   />
-                  <label className={styles.formLabel}>Glucose Level (mg/dL)</label>
+                  <label htmlFor="glucose" className={styles.formLabel}>Glucose Level (mg/dL)</label>
                   <div className={styles.formUnderline}></div>
                   {data.glucose && (
                     <div
@@ -523,7 +532,7 @@ export default function Monitoring() {
                 <div className={styles.historyList}>
                   {history.map((record, index) => (
                     <motion.div
-                      key={index}
+                      key={record.date}
                       className={styles.historyCard}
                       initial={{ opacity: 0, y: 20 }}
                       animate={{ opacity: 1, y: 0 }}
