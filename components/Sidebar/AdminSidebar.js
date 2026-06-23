@@ -8,14 +8,7 @@ export default function AdminSidebar({ children }) {
   const path = router.query;
   const [isOpen, setIsOpen] = useState(false);
   
-  function SetOpen(){
-    if(isOpen){
-      setIsOpen(false)
-    }else{
-      setIsOpen(true)
-    }
-    console.log(isOpen)
-  }
+  const toggleSidebar = () => setIsOpen(prev => !prev);
 
   const menuItems = [
     {
@@ -52,15 +45,26 @@ export default function AdminSidebar({ children }) {
       <div className="flex-1 flex flex-col overflow-hidden">
         <div className="flex h-full">
           
-          <span onClick={SetOpen} className=' absolute text-white md:hidden px-4 py-2 bg-green-600'>
+          <button
+            onClick={toggleSidebar}
+            className='absolute text-white md:hidden px-4 py-2 bg-green-600 z-50 focus:outline-none focus:ring-2 focus:ring-green-500'
+            aria-label={isOpen ? "Close sidebar" : "Open sidebar"}
+            aria-expanded={isOpen}
+          >
             <FaList size={18}/>
-          </span>
+          </button>
 
           <nav className={` md:flex md:w-60 w-16 h-full transition ease-in-out duration-300 bg-gray2 dark:bg-gray6 ${isOpen ? " absolute": "hidden"}`}>
             <ul className="w-full flex flex-col mx-auto px-2 py-2">
               {/* Static Sidebar Icons */}
-               <li onClick={SetOpen} className='px-2 md:hidden'>
-               <FaArrowLeft className='text-red-400' size={20}/>  
+               <li className='px-2 md:hidden'>
+                <button
+                  onClick={toggleSidebar}
+                  className='focus:outline-none focus:ring-2 focus:ring-red-400 rounded'
+                  aria-label="Close sidebar"
+                >
+                  <FaArrowLeft className='text-red-400' size={20}/>
+                </button>
                </li>
 
               <li key={'Dashboard'}>
