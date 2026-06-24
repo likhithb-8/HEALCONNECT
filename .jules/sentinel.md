@@ -12,3 +12,8 @@
 **Vulnerability:** A nested `Downloads/` directory contained a full duplicate of the project, including sensitive configuration files and potentially outdated or exposed credentials.
 **Learning:** Accidental commits of temporary or local "backup" folders (like `Downloads/`) can lead to massive data leakage and increase the project's attack surface by mirroring vulnerabilities.
 **Prevention:** Regularly audit the repository for unexpected directories and ensure `.gitignore` is comprehensive enough to catch common temporary locations. Use `git clean -fd` locally before pushing to identify untracked files.
+
+## 2026-06-24 - [User Enumeration in Auth Flows]
+**Vulnerability:** The login and forgot password flows provided specific feedback that revealed whether a username or email address existed in the system.
+**Learning:** Specific error messages like "User not found" or "Incorrect password" facilitate account discovery and credential stuffing attacks by allowing attackers to validate usernames.
+**Prevention:** Always use generic error messages for authentication failures (e.g., "Invalid username or password") and consistent success-like responses for forgot password requests regardless of account existence.
