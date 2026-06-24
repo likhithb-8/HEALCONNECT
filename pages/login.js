@@ -22,7 +22,7 @@ export default function LoginPage() {
   useEffect(() => {
     const savedTheme = localStorage.getItem("theme");
     const systemPrefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
-    
+
     // Default to light mode unless explicitly saved as dark
     if (savedTheme === "dark") {
       setDarkMode(true);
@@ -65,14 +65,8 @@ export default function LoginPage() {
     // Find user by username
     const user = registeredUsers.find(u => u.username === username);
 
-    if (!user) {
-      setError("User not found. Please sign up first.");
-      return;
-    }
-
-    // Check password
-    if (user.password !== password) {
-      setError("Incorrect password. Please try again.");
+    if (!user || user.password !== password) {
+      setError("Invalid username or password");
       return;
     }
 
@@ -113,14 +107,8 @@ export default function LoginPage() {
     // Get registered users from localStorage
     const registeredUsers = JSON.parse(localStorage.getItem('registeredUsers') || '[]');
 
-    // Find user by email
-    const user = registeredUsers.find(u => u.email === forgotEmail);
-
-    if (user) {
-      setForgotMessage(`Password reset instructions have been sent to ${forgotEmail}. In this demo, your username is: ${user.username}`);
-    } else {
-      setForgotMessage("If an account with this email exists, password reset instructions will be sent.");
-    }
+    // To prevent user enumeration, we return the same message regardless of whether the email exists.
+    setForgotMessage("If an account with this email exists, password reset instructions will be sent.");
 
     // Clear email after 3 seconds
     setTimeout(() => {
@@ -143,27 +131,27 @@ export default function LoginPage() {
       {/* Animated background elements */}
       <div className={styles.backgroundElements}>
         <div className={styles.circleElement} style={{
-          background: darkMode 
+          background: darkMode
             ? "linear-gradient(135deg, rgba(37, 99, 235, 0.08) 0%, rgba(16, 185, 129, 0.08) 100%)"
             : "linear-gradient(135deg, rgba(37, 99, 235, 0.15) 0%, rgba(16, 185, 129, 0.15) 100%)"
         }}></div>
         <div className={styles.circleElement} style={{
-          background: darkMode 
+          background: darkMode
             ? "linear-gradient(135deg, rgba(37, 99, 235, 0.08) 0%, rgba(16, 185, 129, 0.08) 100%)"
             : "linear-gradient(135deg, rgba(37, 99, 235, 0.15) 0%, rgba(16, 185, 129, 0.15) 100%)"
         }}></div>
         <div className={styles.circleElement} style={{
-          background: darkMode 
+          background: darkMode
             ? "linear-gradient(135deg, rgba(37, 99, 235, 0.08) 0%, rgba(16, 185, 129, 0.08) 100%)"
             : "linear-gradient(135deg, rgba(37, 99, 235, 0.15) 0%, rgba(16, 185, 129, 0.15) 100%)"
         }}></div>
         <div className={styles.circleElement} style={{
-          background: darkMode 
+          background: darkMode
             ? "linear-gradient(135deg, rgba(37, 99, 235, 0.08) 0%, rgba(16, 185, 129, 0.08) 100%)"
             : "linear-gradient(135deg, rgba(37, 99, 235, 0.15) 0%, rgba(16, 185, 129, 0.15) 100%)"
         }}></div>
         <div className={styles.circleElement} style={{
-          background: darkMode 
+          background: darkMode
             ? "linear-gradient(135deg, rgba(37, 99, 235, 0.08) 0%, rgba(16, 185, 129, 0.08) 100%)"
             : "linear-gradient(135deg, rgba(37, 99, 235, 0.15) 0%, rgba(16, 185, 129, 0.15) 100%)"
         }}></div>
@@ -597,4 +585,3 @@ export default function LoginPage() {
     </div>
   );
 }
-
