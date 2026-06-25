@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, useMemo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import styles from './Monitoring.module.css';
 import { isVitalNormal, getVitalStatusMessage } from '../lib/thresholdDefaults';
@@ -36,6 +36,34 @@ const pulseAnimation = {
   }
 };
 
+const getStatusColor = (type, value) => {
+  // Use the threshold system for accurate status colors
+  const result = isVitalNormal(type, value);
+
+  switch (result.severity) {
+    case 'critical':
+      return '#ef4444'; // Red - critical
+    case 'warning':
+      return '#f59e0b'; // Yellow/Orange - warning
+    case 'none':
+      return '#10b981'; // Green - normal
+    default:
+      return '#3b82f6'; // Blue - default
+  }
+};
+
+const getBloodPressureStatus = (bp) => {
+  if (!bp) return { color: '#3b82f6', status: 'Normal' };
+
+  const [systolic, diastolic] = bp.split('/').map(Number);
+
+  if (systolic >= 140 || diastolic >= 90) return { color: '#ef4444', status: 'High' };
+  if (systolic >= 130 || diastolic >= 85) return { color: '#f59e0b', status: 'Elevated' };
+  if (systolic <= 90 || diastolic <= 60) return { color: '#ef4444', status: 'Low' };
+
+  return { color: '#10b981', status: 'Normal' };
+};
+
 export default function Monitoring() {
   const [data, setData] = useState({
     temperature: '',
@@ -50,11 +78,11 @@ export default function Monitoring() {
   const [currentHeartRate, setCurrentHeartRate] = useState(72);
   const [currentOxygen, setCurrentOxygen] = useState(98);
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [criticalAlert, setCriticalAlert] = useState(null);
   const heartRateInterval = useRef(null);
   const oxygenInterval = useRef(null);
 
-  useEffect(() => {
+  // Derive critical alert state to eliminate redundant render cycles
+  const criticalAlert = useMemo(() => {
     if (isMonitoring || data.heartRate || data.oxygen) {
         const hrValue = data.heartRate ? parseFloat(data.heartRate) : (isMonitoring ? currentHeartRate : 72);
         const oxValue = data.oxygen ? parseFloat(data.oxygen) : (isMonitoring ? currentOxygen : 98);
@@ -63,23 +91,20 @@ export default function Monitoring() {
         const oxStatus = isVitalNormal('oxygen', oxValue);
 
         if (hrStatus.severity === 'critical' || oxStatus.severity === 'critical') {
-            setCriticalAlert({
+            return {
                 title: 'Critical Vital Sign Alert',
                 message: `We've detected a critical reading: ${hrStatus.severity === 'critical' ? 'Heart Rate' : 'Oxygen Levels'}. Please remain calm and follow the recommendations below.`,
                 type: 'critical'
-            });
+            };
         } else if (hrStatus.severity === 'warning' || oxStatus.severity === 'warning') {
-            setCriticalAlert({
+            return {
                 title: 'Health Warning',
                 message: 'One or more of your vitals are outside the optimal range.',
                 type: 'warning'
-            });
-        } else {
-            setCriticalAlert(null);
+            };
         }
-    } else {
-        setCriticalAlert(null);
     }
+    return null;
   }, [currentHeartRate, currentOxygen, isMonitoring, data.heartRate, data.oxygen]);
 
   useEffect(() => {
@@ -155,34 +180,6 @@ export default function Monitoring() {
       if (heartRateInterval.current) clearInterval(heartRateInterval.current);
       if (oxygenInterval.current) clearInterval(oxygenInterval.current);
     }
-  };
-
-  const getStatusColor = (type, value) => {
-    // Use the threshold system for accurate status colors
-    const result = isVitalNormal(type, value);
-
-    switch (result.severity) {
-      case 'critical':
-        return '#ef4444'; // Red - critical
-      case 'warning':
-        return '#f59e0b'; // Yellow/Orange - warning
-      case 'none':
-        return '#10b981'; // Green - normal
-      default:
-        return '#3b82f6'; // Blue - default
-    }
-  };
-
-  const getBloodPressureStatus = (bp) => {
-    if (!bp) return { color: '#3b82f6', status: 'Normal' };
-
-    const [systolic, diastolic] = bp.split('/').map(Number);
-
-    if (systolic >= 140 || diastolic >= 90) return { color: '#ef4444', status: 'High' };
-    if (systolic >= 130 || diastolic >= 85) return { color: '#f59e0b', status: 'Elevated' };
-    if (systolic <= 90 || diastolic <= 60) return { color: '#ef4444', status: 'Low' };
-
-    return { color: '#10b981', status: 'Normal' };
   };
 
   return (
@@ -326,12 +323,12 @@ export default function Monitoring() {
             </div>
 
             <HealthInsights 
-              currentVitals={{
+              currentVitals={useMemo(() => ({
                 heartRate: data.heartRate ? parseFloat(data.heartRate) : (isMonitoring ? currentHeartRate : 0),
                 oxygen: data.oxygen ? parseFloat(data.oxygen) : (isMonitoring ? currentOxygen : 0),
                 temperature: data.temperature ? parseFloat(data.temperature) : 0,
                 bloodPressure: data.bloodPressure
-              }}
+              }), [data.heartRate, data.oxygen, data.temperature, data.bloodPressure, isMonitoring, currentHeartRate, currentOxygen])}
               history={history}
             />
           </motion.section>
@@ -523,7 +520,7 @@ export default function Monitoring() {
                 <div className={styles.historyList}>
                   {history.map((record, index) => (
                     <motion.div
-                      key={index}
+                      key={record.date}
                       className={styles.historyCard}
                       initial={{ opacity: 0, y: 20 }}
                       animate={{ opacity: 1, y: 0 }}
