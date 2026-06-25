@@ -10,6 +10,7 @@ import { UserContext } from '@lib/context'
 import { useUserData } from '@lib/userInfo'
 import Layout from './layout'
 import SupportWidget from '@/components/Support/SupportWidget'
+import { Toaster } from 'react-hot-toast'
 
 // ✅ Single App component
 function MyApp({ Component, pageProps }) {
@@ -25,6 +26,7 @@ function MyApp({ Component, pageProps }) {
         <ScrollToTop />
         <Footer />
         <SupportWidget />
+        <Toaster position="top-right" />
       </UserContext.Provider>
     </ThemeProvider>
   )
