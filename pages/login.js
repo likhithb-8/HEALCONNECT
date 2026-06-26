@@ -14,6 +14,7 @@ export default function LoginPage() {
   const [darkMode, setDarkMode] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
   const [showForgotPassword, setShowForgotPassword] = useState(false);
   const [forgotEmail, setForgotEmail] = useState("");
   const [forgotMessage, setForgotMessage] = useState("");
@@ -22,7 +23,7 @@ export default function LoginPage() {
   useEffect(() => {
     const savedTheme = localStorage.getItem("theme");
     const systemPrefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
-    
+
     // Default to light mode unless explicitly saved as dark
     if (savedTheme === "dark") {
       setDarkMode(true);
@@ -53,9 +54,11 @@ export default function LoginPage() {
   const handleLogin = (e) => {
     e.preventDefault();
     setError(""); // Clear previous errors
+    setIsLoading(true);
 
     if (!username.trim() || !password.trim()) {
       setError("Please enter both username and password");
+      setIsLoading(false);
       return;
     }
 
@@ -67,12 +70,14 @@ export default function LoginPage() {
 
     if (!user) {
       setError("User not found. Please sign up first.");
+      setIsLoading(false);
       return;
     }
 
     // Check password
     if (user.password !== password) {
       setError("Incorrect password. Please try again.");
+      setIsLoading(false);
       return;
     }
 
@@ -143,27 +148,27 @@ export default function LoginPage() {
       {/* Animated background elements */}
       <div className={styles.backgroundElements}>
         <div className={styles.circleElement} style={{
-          background: darkMode 
+          background: darkMode
             ? "linear-gradient(135deg, rgba(37, 99, 235, 0.08) 0%, rgba(16, 185, 129, 0.08) 100%)"
             : "linear-gradient(135deg, rgba(37, 99, 235, 0.15) 0%, rgba(16, 185, 129, 0.15) 100%)"
         }}></div>
         <div className={styles.circleElement} style={{
-          background: darkMode 
+          background: darkMode
             ? "linear-gradient(135deg, rgba(37, 99, 235, 0.08) 0%, rgba(16, 185, 129, 0.08) 100%)"
             : "linear-gradient(135deg, rgba(37, 99, 235, 0.15) 0%, rgba(16, 185, 129, 0.15) 100%)"
         }}></div>
         <div className={styles.circleElement} style={{
-          background: darkMode 
+          background: darkMode
             ? "linear-gradient(135deg, rgba(37, 99, 235, 0.08) 0%, rgba(16, 185, 129, 0.08) 100%)"
             : "linear-gradient(135deg, rgba(37, 99, 235, 0.15) 0%, rgba(16, 185, 129, 0.15) 100%)"
         }}></div>
         <div className={styles.circleElement} style={{
-          background: darkMode 
+          background: darkMode
             ? "linear-gradient(135deg, rgba(37, 99, 235, 0.08) 0%, rgba(16, 185, 129, 0.08) 100%)"
             : "linear-gradient(135deg, rgba(37, 99, 235, 0.15) 0%, rgba(16, 185, 129, 0.15) 100%)"
         }}></div>
         <div className={styles.circleElement} style={{
-          background: darkMode 
+          background: darkMode
             ? "linear-gradient(135deg, rgba(37, 99, 235, 0.08) 0%, rgba(16, 185, 129, 0.08) 100%)"
             : "linear-gradient(135deg, rgba(37, 99, 235, 0.15) 0%, rgba(16, 185, 129, 0.15) 100%)"
         }}></div>
@@ -254,6 +259,7 @@ export default function LoginPage() {
                   setUsername(e.target.value);
                   setError(""); // Clear error when user starts typing
                 }}
+                className="focus:ring-2 focus:ring-blue-500 outline-none"
                 style={{
                   width: "100%",
                   padding: "10px",
@@ -262,7 +268,6 @@ export default function LoginPage() {
                   background: darkMode ? "#2d3748" : "#f7fafc",
                   color: darkMode ? "#ffffff" : "#2d3748",
                   fontSize: "14px",
-                  outline: "none",
                 }}
                 required
               />
@@ -291,6 +296,7 @@ export default function LoginPage() {
                     setPassword(e.target.value);
                     setError(""); // Clear error when user starts typing
                   }}
+                  className="focus:ring-2 focus:ring-blue-500 outline-none"
                   style={{
                     width: "100%",
                     padding: "10px 40px 10px 10px",
@@ -299,7 +305,6 @@ export default function LoginPage() {
                     background: darkMode ? "#2d3748" : "#f7fafc",
                     color: darkMode ? "#ffffff" : "#2d3748",
                     fontSize: "14px",
-                    outline: "none",
                   }}
                   required
                 />
@@ -351,20 +356,22 @@ export default function LoginPage() {
             {/* Login Button */}
             <button
               type="submit"
+              disabled={isLoading}
               style={{
                 width: "100%",
                 padding: "12px",
-                background: darkMode ? "#1565c0" : "#1976d2",
-                color: "white",
+                background: isLoading ? (darkMode ? "#2d3748" : "#e2e8f0") : (darkMode ? "#1565c0" : "#1976d2"),
+                color: isLoading ? (darkMode ? "#718096" : "#a0aec0") : "white",
                 border: "none",
                 borderRadius: "6px",
-                cursor: "pointer",
+                cursor: isLoading ? "not-allowed" : "pointer",
                 fontSize: "15px",
                 fontWeight: "600",
                 marginBottom: "12px",
+                opacity: isLoading ? 0.7 : 1,
               }}
             >
-              LOGIN
+              {isLoading ? "LOGGING IN..." : "LOGIN"}
             </button>
 
             {/* Forgot Password Link */}
@@ -597,4 +604,3 @@ export default function LoginPage() {
     </div>
   );
 }
-
