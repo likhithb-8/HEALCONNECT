@@ -17,3 +17,8 @@
 **Vulnerability:** The application was missing standard security headers (HSTS, CSP, X-Frame-Options, etc.), making it vulnerable to clickjacking, MIME-sniffing, and cross-site scripting (XSS) attacks.
 **Learning:** Next.js applications require explicit configuration in `next.config.js` to implement these headers globally. A tailored Content Security Policy (CSP) is necessary to support third-party integrations like Firebase without compromising security.
 **Prevention:** Implement a baseline set of security headers in all web projects. Use `headers()` in `next.config.js` to ensure they are applied to all routes.
+
+## 2025-05-16 - [User Enumeration in Authentication Flows]
+**Vulnerability:** The login and forgot password flows revealed whether an account existed by returning specific error messages ("User not found") or disclosing the username in the password reset success message.
+**Learning:** Providing detailed feedback in authentication failures helps legitimate users but also assists attackers in mapping valid accounts for brute-force or social engineering attacks.
+**Prevention:** Use generic error messages like "Invalid username or password" and standard success messages for password resets that do not confirm if the account exists.

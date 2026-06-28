@@ -65,14 +65,10 @@ export default function LoginPage() {
     // Find user by username
     const user = registeredUsers.find(u => u.username === username);
 
-    if (!user) {
-      setError("User not found. Please sign up first.");
-      return;
-    }
-
-    // Check password
-    if (user.password !== password) {
-      setError("Incorrect password. Please try again.");
+    // Check if user exists and password matches
+    // Generic error message to prevent user enumeration
+    if (!user || user.password !== password) {
+      setError("Invalid username or password. Please try again.");
       return;
     }
 
@@ -113,14 +109,8 @@ export default function LoginPage() {
     // Get registered users from localStorage
     const registeredUsers = JSON.parse(localStorage.getItem('registeredUsers') || '[]');
 
-    // Find user by email
-    const user = registeredUsers.find(u => u.email === forgotEmail);
-
-    if (user) {
-      setForgotMessage(`Password reset instructions have been sent to ${forgotEmail}. In this demo, your username is: ${user.username}`);
-    } else {
-      setForgotMessage("If an account with this email exists, password reset instructions will be sent.");
-    }
+    // Generic response to avoid leaking account existence and usernames
+    setForgotMessage("If an account with this email exists, password reset instructions will be sent.");
 
     // Clear email after 3 seconds
     setTimeout(() => {
