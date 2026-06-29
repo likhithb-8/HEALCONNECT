@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useMemo } from "react";
 import { useRouter } from "next/router";
 import { FaFileAlt, FaBell, FaUsers } from "react-icons/fa";
 import Image from "next/image";
@@ -7,6 +7,14 @@ import dynamic from "next/dynamic";
 const AuthCheck = dynamic(() => import("@components/Auth/AuthCheck"), { ssr: false });
 const DoctorSidebar = dynamic(() => import("@components/Sidebar/DoctorSidebar"), { ssr: false });
 const AlertNotifications = dynamic(() => import("@components/DoctorComponents/AlertNotifications"), { ssr: false });
+
+// Hoist status mapping outside the component to prevent recreation on every render
+const STATUS_MAP = {
+  "Viral Fever": "text-green-700 bg-green-100 dark:bg-green-700 dark:text-green-100",
+  "Kidney Heart-Attack": "text-black bg-yellow-500 dark:bg-yellow-500 dark:text-white",
+  "Expired": "text-gray-700 bg-gray-100 dark:text-gray-100 dark:bg-gray-700",
+  "Brain Tumor": "text-red-700 bg-red-100 dark:text-red-100 dark:bg-red-700",
+};
 
 // FetchPatients can stay, but we will override its behavior for offline caching
 import FetchPatients from "../../lib/fetchPatients";
@@ -87,7 +95,9 @@ export default function DoctorDashboard() {
     fetchPatients();
   }, []);
 
-  const summaryStats = [
+  // Memoize summary statistics to prevent unnecessary array recreation on every render.
+  // This reduces the overhead for React's reconciliation process in the dashboard.
+  const summaryStats = useMemo(() => [
     {
       icon: <FaUsers size={36} className="text-blue-500 dark:text-gray-100" />,
       label: "Total Patients",
@@ -95,16 +105,10 @@ export default function DoctorDashboard() {
     },
     { icon: <FaFileAlt size={36} className="text-blue-500 dark:text-gray-100" />, label: "Total Reports", value: "02" },
     { icon: <FaBell size={36} className="text-blue-500 dark:text-gray-100" />, label: "Appointments", value: "00" },
-  ];
+  ], [patients.length]);
 
   const getStatusClasses = (status) => {
-    const statusMap = {
-      "Viral Fever": "text-green-700 bg-green-100 dark:bg-green-700 dark:text-green-100",
-      "Kidney Heart-Attack": "text-black bg-yellow-500 dark:bg-yellow-500 dark:text-white",
-      "Expired": "text-gray-700 bg-gray-100 dark:text-gray-100 dark:bg-gray-700",
-      "Brain Tumor": "text-red-700 bg-red-100 dark:text-red-100 dark:bg-red-700",
-    };
-    return `px-2 py-1 font-semibold leading-tight rounded-full ${statusMap[status] || ""}`;
+    return `px-2 py-1 font-semibold leading-tight rounded-full ${STATUS_MAP[status] || ""}`;
   };
 
   return (
