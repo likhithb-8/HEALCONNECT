@@ -82,23 +82,38 @@ export default function PatientSidebar({ children }) {
 
           
 
-          <span onClick={SetOpen} className=' absolute text-white md:hidden px-4 py-2 bg-green-600'>
+          {!isOpen && (
+            <button
+              onClick={SetOpen}
+              aria-label="Open sidebar"
+              aria-expanded={isOpen}
+              className=' absolute text-white md:hidden px-4 py-2 bg-green-600 focus:outline-none focus:ring-2 focus:ring-green-500 z-[1001]'
+            >
 
-            <FaList size={18}/>
+              <FaList size={18}/>
 
-          </span>
+            </button>
+          )}
 
 
 
-          <nav className={` md:flex md:w-60 w-16 h-full transition ease-in-out duration-300 bg-gray2 dark:bg-gray6 ${isOpen ? " absolute": "hidden"}`}>
+          <nav className={` md:flex md:w-60 w-16 h-full transition ease-in-out duration-300 bg-gray2 dark:bg-gray6 ${isOpen ? " absolute z-[1001]": "hidden"}`}>
 
             <ul className="w-full flex flex-col mx-auto px-2 py-2">
 
               {/* Static Sidebar Icons */}
 
-               <li onClick={SetOpen} className='px-2 md:hidden'>
+               <li className='px-2 md:hidden'>
 
-               <FaArrowLeft className='text-red-400' size={20}/>  
+                 <button
+                   onClick={SetOpen}
+                   aria-label="Close sidebar"
+                   className="focus:outline-none focus:ring-2 focus:ring-red-400 rounded"
+                 >
+
+                   <FaArrowLeft className='text-red-400' size={20}/>
+
+                 </button>
 
                </li>
 
