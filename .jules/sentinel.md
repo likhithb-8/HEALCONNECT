@@ -22,3 +22,8 @@
 **Vulnerability:** The login and forgot password flows revealed whether an account existed by returning specific error messages ("User not found") or disclosing the username in the password reset success message.
 **Learning:** Providing detailed feedback in authentication failures helps legitimate users but also assists attackers in mapping valid accounts for brute-force or social engineering attacks.
 **Prevention:** Use generic error messages like "Invalid username or password" and standard success messages for password resets that do not confirm if the account exists.
+
+## 2025-05-16 - [Broken Access Control in Dashboard Routes]
+**Vulnerability:** The application relied on a client-side check that only verified if a user was logged in, but not whether their role matched the protected route (e.g., a patient could access /admin/dashboard).
+**Learning:** Authentication (knowing who the user is) is not sufficient for security; Authorization (knowing what the user is allowed to do) must also be enforced for all sensitive routes.
+**Prevention:** Implement centralized role-based access control (RBAC) that validates the user's role against the route's requirements. Redirect unauthorized users to their appropriate landing pages.
