@@ -23,7 +23,7 @@
 **Learning:** Providing detailed feedback in authentication failures helps legitimate users but also assists attackers in mapping valid accounts for brute-force or social engineering attacks.
 **Prevention:** Use generic error messages like "Invalid username or password" and standard success messages for password resets that do not confirm if the account exists.
 
-## 2026-06-29 - [Mass Assignment and PII Leakage in Profile Update]
-**Vulnerability:** The patient profile update logic used a spread operator (`...formData`) to merge user-supplied data into the session object stored in `localStorage`. This allowed for potential Mass Assignment/Privilege Escalation if fields like `role` were injected into the form state. Additionally, sensitive PII was being logged to the browser console.
-**Learning:** In client-centric applications where `localStorage` acts as the source of truth for sessions, unrestricted object merging during updates is a high-risk pattern. Malicious users can modify client-side state to escalate privileges if the update logic doesn't use an allow-list.
-**Prevention:** Always use explicit field mapping (an allow-list) when updating user session objects or profile data. Avoid using spread operators on user-controlled objects when merging into sensitive data structures. Remove all debug logs that output sensitive patient data (PII/PHI).
+## 2025-05-16 - [Broken Access Control in Dashboard Routes]
+**Vulnerability:** The application relied on a client-side check that only verified if a user was logged in, but not whether their role matched the protected route (e.g., a patient could access /admin/dashboard).
+**Learning:** Authentication (knowing who the user is) is not sufficient for security; Authorization (knowing what the user is allowed to do) must also be enforced for all sensitive routes.
+**Prevention:** Implement centralized role-based access control (RBAC) that validates the user's role against the route's requirements. Redirect unauthorized users to their appropriate landing pages.
