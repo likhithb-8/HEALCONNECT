@@ -5,9 +5,22 @@ import dynamic from "next/dynamic";
 import Image from "next/image";
 const ApexCharts = dynamic(() => import("react-apexcharts"), { ssr: false });
 
+// Hoist static pulse waveform offsets to prevent re-allocation on every interval tick.
+const PULSE_WAVEFORM_OFFSETS = [
+  { dt: 0, y: 64 }, { dt: 5, y: 168 }, { dt: 10, y: 220 }, { dt: 15, y: 350 },
+  { dt: 20, y: 550 }, { dt: 25, y: 880 }, { dt: 30, y: 520 }, { dt: 35, y: 320 },
+  { dt: 40, y: 150 }, { dt: 45, y: 80 }, { dt: 50, y: 50 }, { dt: 55, y: 20 },
+  { dt: 60, y: 10 }, { dt: 65, y: 15 }, { dt: 70, y: 10 }, { dt: 75, y: -10 },
+  { dt: 80, y: -50 }, { dt: 85, y: -150 }, { dt: 90, y: -350 }, { dt: 95, y: -750 },
+  { dt: 100, y: -1150 }, { dt: 105, y: -1520 }, { dt: 110, y: -1150 }, { dt: 115, y: -650 },
+  { dt: 120, y: -350 }, { dt: 125, y: -150 }, { dt: 130, y: -80 }, { dt: 135, y: -50 },
+  { dt: 140, y: -20 }, { dt: 145, y: -30 }, { dt: 150, y: -20 }, { dt: 155, y: -40 },
+  { dt: 160, y: -30 }, { dt: 165, y: -40 },
+];
+
 export default function ECGMonitor() {
-  const [data, setData] = useState([]);
-  const [deviceStatus, setDeviceStatus] = useState(false);
+  // Consolidate device data into a single state to minimize re-renders during Firestore updates.
+  const [device, setDevice] = useState({ data: {}, status: false });
   const [ecgData, setECGData] = useState([{ x: Date.now(), y: 0 }]);
 
   // Use ref to track pulse without triggering interval resets
@@ -20,8 +33,7 @@ export default function ECGMonitor() {
     const unsubscribe = onSnapshot(docRef, (doc) => {
       if (doc.exists()) {
         const docData = doc.data();
-        setData({ ...docData });
-        setDeviceStatus(docData.status);
+        setDevice({ data: docData, status: docData.status });
         pulseRef.current = docData.pulse;
       } else {
         console.log("No such document!");
@@ -65,54 +77,25 @@ export default function ECGMonitor() {
   useEffect(() => {
     const interval = setInterval(() => {
       const pulse = pulseRef.current;
+      const now = Date.now(); // Call Date.now() once per interval for efficiency
 
       setECGData((prevECGData) => {
-        const newECGData = [...prevECGData];
+        let newECGData;
 
         if (pulse >= -300 && pulse <= 300) {
-          newECGData.push({ x: Date.now(), y: 0 });
+          newECGData = [...prevECGData, { x: now, y: 0 }];
         } else if (pulse > 600) {
-          const pulseArray = [
-            { x: Date.now(), y: 64 },
-            { x: Date.now() + 5, y: 168 },
-            { x: Date.now() + 10, y: 220 },
-            { x: Date.now() + 15, y: 350 },
-            { x: Date.now() + 20, y: 550 },
-            { x: Date.now() + 25, y: 880 },
-            { x: Date.now() + 30, y: 520 },
-            { x: Date.now() + 35, y: 320 },
-            { x: Date.now() + 40, y: 150 },
-            { x: Date.now() + 45, y: 80 },
-            { x: Date.now() + 50, y: 50 },
-            { x: Date.now() + 55, y: 20 },
-            { x: Date.now() + 60, y: 10 },
-            { x: Date.now() + 65, y: 15 },
-            { x: Date.now() + 70, y: 10 },
-            { x: Date.now() + 75, y: -10 },
-            { x: Date.now() + 80, y: -50 },
-            { x: Date.now() + 85, y: -150 },
-            { x: Date.now() + 90, y: -350 },
-            { x: Date.now() + 95, y: -750 },
-            { x: Date.now() + 100, y: -1150 },
-            { x: Date.now() + 105, y: -1520 },
-            { x: Date.now() + 110, y: -1150 },
-            { x: Date.now() + 115, y: -650 },
-            { x: Date.now() + 120, y: -350 },
-            { x: Date.now() + 125, y: -150 },
-            { x: Date.now() + 130, y: -80 },
-            { x: Date.now() + 135, y: -50 },
-            { x: Date.now() + 140, y: -20 },
-            { x: Date.now() + 145, y: -30 },
-            { x: Date.now() + 150, y: -20 },
-            { x: Date.now() + 155, y: -40 },
-            { x: Date.now() + 160, y: -30 },
-            { x: Date.now() + 165, y: -40 },
-          ];
-          newECGData.push(...pulseArray);
+          // Use pre-calculated waveform offsets to avoid array and object re-creation overhead.
+          const pulseArray = PULSE_WAVEFORM_OFFSETS.map(offset => ({
+            x: now + offset.dt,
+            y: offset.y
+          }));
+          newECGData = [...prevECGData, ...pulseArray];
         } else {
           return prevECGData;
         }
 
+        // Keep buffer size limited to prevent memory bloat and slow renders.
         if (newECGData.length > 1000) {
           return newECGData.slice(-1000);
         }
@@ -129,12 +112,12 @@ export default function ECGMonitor() {
         <p>
           Device status:{" "}
           <span className="text-green-500">
-            {data.status ? "Online" : "Offline"}
+            {device.status ? "Online" : "Offline"}
           </span>
         </p>
       </div>
 
-      {!deviceStatus && (
+      {!device.status && (
         <div className="fixed flex md:p-0 p-2 flex-col insert-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full">
           <div className="relative top-20 md:mx-auto flex justify-between items-center flex-col w-auto md:w-1/4 h-auto rounded-lg shadow-xl p-2 bg-gray1 dark:bg-gray6">
             <h1 className="text-base mt-2 mx-4 text-gray7 font-semibold text-center">
@@ -161,7 +144,7 @@ export default function ECGMonitor() {
               </h2>
             </div>
             <div className="basis-11/12">
-              {!deviceStatus ? (
+              {!device.status ? (
                 <div className="h-400"></div>
               ) : (
                 <ApexCharts

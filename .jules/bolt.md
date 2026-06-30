@@ -9,3 +9,11 @@
 ## 2025-05-15 - Eliminating Redundant Renders for Derived State
 **Learning:** Using `useEffect` to sync state based on other state or props (like calculating a `criticalAlert` based on `currentVitals`) triggers a second render cycle immediately after the first.
 **Action:** Replace `useEffect` + `useState` with `useMemo` for derived UI logic to compute values during the initial render and eliminate unnecessary updates.
+
+## 2025-05-15 - Consolidating High-Frequency State Updates
+**Learning:** Updating multiple independent states (e.g., `data` and `status`) within a single real-time stream listener (like Firestore's `onSnapshot`) triggers multiple React render cycles per data packet.
+**Action:** Consolidate related stream data into a single state object to ensure only one render occurs per update, significantly reducing CPU usage during high-frequency monitoring.
+
+## 2025-05-15 - Hoisting Static Waveform Patterns
+**Learning:** Defining large pulse waveform arrays inside a high-frequency `setInterval` (e.g., every 100ms) causes massive heap allocation and garbage collection pressure, as the array and its contained objects are recreated 10 times per second.
+**Action:** Hoist static waveform offsets and Y-values outside the component. Use `.map()` on the static array once per tick to apply the current timestamp, drastically reducing memory churn.
