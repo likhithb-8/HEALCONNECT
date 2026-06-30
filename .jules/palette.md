@@ -1,3 +1,3 @@
-## 2025-05-15 - Accessibility in Auth Forms
-**Learning:** Auth pages (Login/Signup) often have custom layouts that bypass standard UI components, leading to missing accessibility attributes like `aria-label` on icon-only toggles and disconnected form labels.
-**Action:** Always verify `aria-label` on password visibility and theme toggles in custom form implementations. Ensure all form labels use `htmlFor` to link to input `id`s.
+## 2026-06-30 - Sidebar Accessibility and Semantics
+**Learning:** Mobile sidebar toggles and close buttons were implemented using non-semantic `<span>` and `<li>` elements with click handlers, which are inaccessible to keyboard users and screen readers. Additionally, mobile toggle buttons can overlap and intercept events intended for the menu once open.
+**Action:** Use semantic `<button>` elements for all interactive sidebar controls. Add `aria-label` and `aria-expanded` attributes. Conditionally hide the "Open sidebar" toggle when the menu is open to ensure the "Close" button is interactable and to prevent z-index conflicts on mobile viewports.
