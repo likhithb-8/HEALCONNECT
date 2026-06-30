@@ -60,11 +60,21 @@ export default function EditProfile() {
         try {
             // Update localStorage
             if (typeof window !== 'undefined') {
-                console.log("Updating localStorage with:", formData); // Debug log
                 const currentUserData = JSON.parse(localStorage.getItem('currentUser') || '{}');
+
+                // Security: Explicitly pick allowed fields to prevent Mass Assignment/Privilege Escalation
                 const updatedUserData = {
                     ...currentUserData,
-                    ...formData
+                    name: formData.name,
+                    email: formData.email,
+                    number: formData.number,
+                    age: formData.age,
+                    bloodGroup: formData.bloodGroup,
+                    weight: formData.weight,
+                    height: formData.height,
+                    diabetesStatus: formData.diabetesStatus,
+                    surgicalHistory: formData.surgicalHistory,
+                    cardiacHistory: formData.cardiacHistory
                 };
                 localStorage.setItem('currentUser', JSON.stringify(updatedUserData));
                 

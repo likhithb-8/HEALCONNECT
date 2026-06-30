@@ -22,3 +22,8 @@
 **Vulnerability:** The login and forgot password flows revealed whether an account existed by returning specific error messages ("User not found") or disclosing the username in the password reset success message.
 **Learning:** Providing detailed feedback in authentication failures helps legitimate users but also assists attackers in mapping valid accounts for brute-force or social engineering attacks.
 **Prevention:** Use generic error messages like "Invalid username or password" and standard success messages for password resets that do not confirm if the account exists.
+
+## 2026-06-29 - [Mass Assignment and PII Leakage in Profile Update]
+**Vulnerability:** The patient profile update logic used a spread operator (`...formData`) to merge user-supplied data into the session object stored in `localStorage`. This allowed for potential Mass Assignment/Privilege Escalation if fields like `role` were injected into the form state. Additionally, sensitive PII was being logged to the browser console.
+**Learning:** In client-centric applications where `localStorage` acts as the source of truth for sessions, unrestricted object merging during updates is a high-risk pattern. Malicious users can modify client-side state to escalate privileges if the update logic doesn't use an allow-list.
+**Prevention:** Always use explicit field mapping (an allow-list) when updating user session objects or profile data. Avoid using spread operators on user-controlled objects when merging into sensitive data structures. Remove all debug logs that output sensitive patient data (PII/PHI).
