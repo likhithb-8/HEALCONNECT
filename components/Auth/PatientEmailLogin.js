@@ -59,8 +59,8 @@ export default function PatientEmailLogin() {
       return;
     }
 
-    if (password.length < 6) {
-      setError('Password must be at least 6 characters');
+    if (password.length < 8) {
+      setError('Password must be at least 8 characters');
       return;
     }
 
@@ -167,7 +167,7 @@ export default function PatientEmailLogin() {
           onChange={(e) => setPassword(e.target.value)}
           placeholder="Password"
           className="input-field"
-          minLength="6"
+          minLength="8"
           required
         />
 
