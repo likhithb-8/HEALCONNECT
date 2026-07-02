@@ -9,3 +9,7 @@
 ## 2025-05-15 - Eliminating Redundant Renders for Derived State
 **Learning:** Using `useEffect` to sync state based on other state or props (like calculating a `criticalAlert` based on `currentVitals`) triggers a second render cycle immediately after the first.
 **Action:** Replace `useEffect` + `useState` with `useMemo` for derived UI logic to compute values during the initial render and eliminate unnecessary updates.
+
+## 2026-07-02 - Memoization Stability for Prepended Lists
+**Learning:** Using 'index' for Framer Motion animation delays in a memoized component (e.g., 'delay: index * 0.1') causes the entire list to re-render when a new item is prepended, as every existing item's index changes.
+**Action:** Remove 'index' from memoized child props for prepended lists; use Framer Motion's 'layout' prop for smooth transitions without sacrificing reconciliation efficiency.

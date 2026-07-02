@@ -1,8 +1,79 @@
-import { useState, useEffect, useRef, useMemo } from 'react';
+import { useState, useEffect, useRef, useMemo, memo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import styles from './Monitoring.module.css';
-import { isVitalNormal, getVitalStatusMessage } from '../lib/thresholdDefaults';
+import { isVitalNormal } from '../lib/thresholdDefaults';
 import HealthInsights from '../components/monitoring/HealthInsights';
+
+// Performance Optimization: Hoist static helpers to prevent re-allocation on every render
+const getStatusColor = (type, value) => {
+  const result = isVitalNormal(type, value);
+  switch (result.severity) {
+    case 'critical': return '#ef4444';
+    case 'warning': return '#f59e0b';
+    case 'none': return '#10b981';
+    default: return '#3b82f6';
+  }
+};
+
+const getBloodPressureStatus = (bp) => {
+  if (!bp) return { color: '#3b82f6', status: 'Normal' };
+  const [systolic, diastolic] = bp.split('/').map(Number);
+  if (systolic >= 140 || diastolic >= 90) return { color: '#ef4444', status: 'High' };
+  if (systolic >= 130 || diastolic >= 85) return { color: '#f59e0b', status: 'Elevated' };
+  if (systolic <= 90 || diastolic <= 60) return { color: '#ef4444', status: 'Low' };
+  return { color: '#10b981', status: 'Normal' };
+};
+
+// Performance Optimization: Memoize HistoryCard to prevent re-renders during live monitoring updates.
+// We omit 'index' from props to ensure memoization doesn't fail when new items are prepended.
+const HistoryCard = memo(({ record }) => (
+  <motion.div
+    layout
+    className={styles.historyCard}
+    initial={{ opacity: 0, y: 20 }}
+    animate={{ opacity: 1, y: 0 }}
+    transition={{ duration: 0.3 }}
+    exit={{ opacity: 0, y: -20 }}
+  >
+    <div className={styles.historyDate}>{record.date}</div>
+    <div className={styles.historyData}>
+      <div className={styles.historyItem}>
+        <span>Temp:</span>
+        <span style={{ color: getStatusColor('temperature', record.temperature) }}>
+          {record.temperature}°C
+        </span>
+      </div>
+      <div className={styles.historyItem}>
+        <span>Heart Rate:</span>
+        <span style={{ color: getStatusColor('heartRate', record.heartRate) }}>
+          {record.heartRate} bpm
+        </span>
+      </div>
+      <div className={styles.historyItem}>
+        <span>BP:</span>
+        <span style={{ color: getBloodPressureStatus(record.bloodPressure).color }}>
+          {record.bloodPressure}
+        </span>
+      </div>
+      <div className={styles.historyItem}>
+        <span>O₂:</span>
+        <span style={{ color: getStatusColor('oxygen', record.oxygen) }}>
+          {record.oxygen}%
+        </span>
+      </div>
+      {record.glucose && (
+        <div className={styles.historyItem}>
+          <span>Glucose:</span>
+          <span style={{ color: record.glucose < 70 || record.glucose > 140 ? '#ef4444' : '#10b981' }}>
+            {record.glucose} mg/dL
+          </span>
+        </div>
+      )}
+    </div>
+  </motion.div>
+));
+
+HistoryCard.displayName = 'HistoryCard';
 
 const fadeInUp = {
   hidden: { opacity: 0, y: 40 },
@@ -153,34 +224,6 @@ export default function Monitoring() {
       if (heartRateInterval.current) clearInterval(heartRateInterval.current);
       if (oxygenInterval.current) clearInterval(oxygenInterval.current);
     }
-  };
-
-  const getStatusColor = (type, value) => {
-    // Use the threshold system for accurate status colors
-    const result = isVitalNormal(type, value);
-
-    switch (result.severity) {
-      case 'critical':
-        return '#ef4444'; // Red - critical
-      case 'warning':
-        return '#f59e0b'; // Yellow/Orange - warning
-      case 'none':
-        return '#10b981'; // Green - normal
-      default:
-        return '#3b82f6'; // Blue - default
-    }
-  };
-
-  const getBloodPressureStatus = (bp) => {
-    if (!bp) return { color: '#3b82f6', status: 'Normal' };
-
-    const [systolic, diastolic] = bp.split('/').map(Number);
-
-    if (systolic >= 140 || diastolic >= 90) return { color: '#ef4444', status: 'High' };
-    if (systolic >= 130 || diastolic >= 85) return { color: '#f59e0b', status: 'Elevated' };
-    if (systolic <= 90 || diastolic <= 60) return { color: '#ef4444', status: 'Low' };
-
-    return { color: '#10b981', status: 'Normal' };
   };
 
   return (
@@ -519,51 +562,11 @@ export default function Monitoring() {
             <AnimatePresence>
               {history.length > 0 ? (
                 <div className={styles.historyList}>
-                  {history.map((record, index) => (
-                    <motion.div
+                  {history.map((record) => (
+                    <HistoryCard
                       key={record.date}
-                      className={styles.historyCard}
-                      initial={{ opacity: 0, y: 20 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      transition={{ delay: index * 0.1 }}
-                      exit={{ opacity: 0, y: -20 }}
-                    >
-                      <div className={styles.historyDate}>{record.date}</div>
-                      <div className={styles.historyData}>
-                        <div className={styles.historyItem}>
-                          <span>Temp:</span>
-                          <span style={{ color: getStatusColor('temperature', record.temperature) }}>
-                            {record.temperature}°C
-                          </span>
-                        </div>
-                        <div className={styles.historyItem}>
-                          <span>Heart Rate:</span>
-                          <span style={{ color: getStatusColor('heartRate', record.heartRate) }}>
-                            {record.heartRate} bpm
-                          </span>
-                        </div>
-                        <div className={styles.historyItem}>
-                          <span>BP:</span>
-                          <span style={{ color: getBloodPressureStatus(record.bloodPressure).color }}>
-                            {record.bloodPressure}
-                          </span>
-                        </div>
-                        <div className={styles.historyItem}>
-                          <span>O₂:</span>
-                          <span style={{ color: getStatusColor('oxygen', record.oxygen) }}>
-                            {record.oxygen}%
-                          </span>
-                        </div>
-                        {record.glucose && (
-                          <div className={styles.historyItem}>
-                            <span>Glucose:</span>
-                            <span style={{ color: record.glucose < 70 || record.glucose > 140 ? '#ef4444' : '#10b981' }}>
-                              {record.glucose} mg/dL
-                            </span>
-                          </div>
-                        )}
-                      </div>
-                    </motion.div>
+                      record={record}
+                    />
                   ))}
                 </div>
               ) : (
