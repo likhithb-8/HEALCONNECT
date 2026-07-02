@@ -371,6 +371,7 @@ export default function Contact() {
                             key={category.value}
                             type="button"
                             onClick={() => setFormData(prev => ({ ...prev, category: category.value }))}
+                            aria-pressed={formData.category === category.value}
                             className={`p-3 rounded-lg border-2 transition-all duration-200 flex flex-col items-center gap-2 ${
                               formData.category === category.value
                                 ? `border-${category.color}-500 bg-${category.color}-50 dark:bg-${category.color}-900/20`
@@ -398,17 +399,20 @@ export default function Contact() {
                   {/* Name and Email */}
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div>
-                      <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                      <label htmlFor="name" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                         Full Name <span className="text-red-500">*</span>
                       </label>
                       <input
+                        id="name"
                         type="text"
                         name="name"
                         value={formData.name}
                         onChange={handleChange}
                         onBlur={handleBlur}
+                        aria-required="true"
+                        aria-invalid={errors.name && touched.name ? "true" : "false"}
                         className={`w-full px-4 py-3 rounded-lg border-2 ${
-                          errors.name && touched[name]
+                          errors.name && touched.name
                             ? 'border-red-500 focus:ring-red-500'
                             : 'border-gray-400 dark:border-gray-600 focus:ring-blue-500'
                         } bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:outline-none focus:ring-2 transition-all duration-200`}
@@ -420,15 +424,18 @@ export default function Contact() {
                     </div>
 
                     <div>
-                      <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                      <label htmlFor="email" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                         Email Address <span className="text-red-500">*</span>
                       </label>
                       <input
+                        id="email"
                         type="email"
                         name="email"
                         value={formData.email}
                         onChange={handleChange}
                         onBlur={handleBlur}
+                        aria-required="true"
+                        aria-invalid={errors.email && touched.email ? "true" : "false"}
                         className={`w-full px-4 py-3 rounded-lg border-2 ${
                           errors.email && touched.email
                             ? 'border-red-500 focus:ring-red-500'
@@ -444,15 +451,18 @@ export default function Contact() {
 
                   {/* Subject */}
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                    <label htmlFor="subject" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                       Subject <span className="text-red-500">*</span>
                     </label>
                     <input
+                      id="subject"
                       type="text"
                       name="subject"
                       value={formData.subject}
                       onChange={handleChange}
                       onBlur={handleBlur}
+                      aria-required="true"
+                      aria-invalid={errors.subject && touched.subject ? "true" : "false"}
                       className={`w-full px-4 py-3 rounded-lg border-2 ${
                         errors.subject && touched.subject
                           ? 'border-red-500 focus:ring-red-500'
@@ -481,6 +491,7 @@ export default function Contact() {
                           key={priority.value}
                           type="button"
                           onClick={() => setFormData(prev => ({ ...prev, priority: priority.value }))}
+                          aria-pressed={formData.priority === priority.value}
                           className={`px-4 py-2 rounded-lg border-2 text-sm font-medium transition-all duration-200 ${
                             formData.priority === priority.value
                               ? getPriorityColor(priority.value)
@@ -495,15 +506,19 @@ export default function Contact() {
 
                   {/* Message */}
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                    <label htmlFor="message" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                       Message <span className="text-red-500">*</span>
                     </label>
                     <textarea
+                      id="message"
                       name="message"
                       value={formData.message}
                       onChange={handleChange}
                       onBlur={handleBlur}
                       rows={6}
+                      maxLength={500}
+                      aria-required="true"
+                      aria-invalid={errors.message && touched.message ? "true" : "false"}
                       className={`w-full px-4 py-3 rounded-lg border-2 resize-none ${
                         errors.message && touched.message
                           ? 'border-red-500 focus:ring-red-500'
@@ -514,7 +529,7 @@ export default function Contact() {
                     {errors.message && touched.message && (
                       <p className="mt-1 text-sm text-red-500">{errors.message}</p>
                     )}
-                    <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">
+                    <p className="mt-1 text-sm text-gray-500 dark:text-gray-400" aria-live="polite">
                       {formData.message.length}/500 characters
                     </p>
                   </div>
@@ -651,13 +666,16 @@ export default function Contact() {
                 transition={{ duration: 0.2 }}
                 className="bg-white dark:bg-gray-800 rounded-2xl p-8 max-w-md w-full"
                 onClick={(e) => e.stopPropagation()}
+                role="dialog"
+                aria-modal="true"
+                aria-labelledby="success-modal-title"
               >
                 <div className="text-center">
                   <div className="bg-green-100 dark:bg-green-900/30 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
                     <FaCheckCircle className="text-3xl text-green-600 dark:text-green-400" />
                   </div>
                   
-                  <h3 className="text-2xl font-bold text-gray-900 dark:text-white mb-2">
+                  <h3 id="success-modal-title" className="text-2xl font-bold text-gray-900 dark:text-white mb-2">
                     Message Sent Successfully!
                   </h3>
                   
